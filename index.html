@@ -10,20 +10,38 @@
     <title>Compost Your Internet</title>
 </head>
 <body>
-    <div class="container">
-        <img id="img1" src="playLine.png">
+    <div class="layout">
+        <div class="sidebar">
+            Compost Your Internet
+        </div>
+        <div class="MusicBox">
+            <div class="container">
+                <img id="img1" src="playLine.png">
+            </div>
+            <div id="holder"></div>
+            <script>rotateAnimation("img1",10);</script>    
+        </div>    
     </div>
-    <div id="holder"></div>
-    <script>rotateAnimation("img1",10);</script>
+
 </body>
 <style>
+    .layout{
+        display: grid;
+    }
+    .MusicBox{
+
+    }
     .container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    -moz-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    .sidebar{
+        padding: 20px;
     }
 
     #img1{
@@ -32,7 +50,6 @@
 
     .node0{
         width: 100vw;
-
     }    
     .node1{
         width: 100vw;

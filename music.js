@@ -86,8 +86,10 @@ function AddArt()
     image.setAttribute("src","node0.png");
 
     div.appendChild(image);
-    var holder = window.document.getElementById("holder");
-    holder.appendChild(div);
+    var layout = window.document.getElementsByClassName("layout");
+    layout[0].appendChild(div);
+    //var holder = window.document.getElementById("holder");
+    //holder.appendChild(div);
     image.style.transform = "rotate("+moisture0Spacing * i+"deg)";
     i++;
   }
@@ -104,8 +106,10 @@ function AddArt()
     image.setAttribute("src","node1.png");
 
     div.appendChild(image);
-    var holder = window.document.getElementById("holder");
-    holder.appendChild(div);
+    var layout = window.document.getElementsByClassName("layout");
+    layout[0].appendChild(div);
+    //var holder = window.document.getElementById("holder");
+    //holder.appendChild(div);
     image.style.transform = "rotate("+moisture1Spacing * j+"deg)";
     j++;
   }
