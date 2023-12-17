@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/web-audio-daw"></script>
+    <script src="data.js"></script>
+    <script src="music.js"></script>
+    <title>Compost Your Internet</title>
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar" style="color:aliceblue">
+            Compost Your Internet
+        </div>
+        <div class="MusicBox">
+            <div class="container">
+                <img id="img1" src="playLine.png">
+            </div>
+            <div id="holder"></div>
+            <script>rotateAnimation("img1",10);</script>    
+        </div>    
+    </div>
+    <div class="interactBar">
+        <button id="dropdown"> Connect </button>
+        <select name="cars" id="dropdown">
+            <option selected disabled>Compost Data</option>
+            <optgroup label="Server Status">
+                <option value="SunExposure">Sun Exposure</option>
+                <option value="BatteryPercentage">Battery Charge</option>
+                <option value="OutdoorTemp">Outdoor Temperature</option>
+                <option value="LocalWeather">Local Weather</option>    
+            </optgroup>
+            <optgroup label="Compost Data">
+                <option value="CompostTemp">Temperature</option>
+                <option value="CompostMoisture">Moisture</option>
+                <option value="OutdoorTemp">Outdoor Temperature</option>
+                <option value="LocalWeather">Local Weather</option>    
+            </optgroup>
+        </select>
+        <div style="padding: 10px; margin: 5px">to</div>
+        <select name="musicElement" id="dropdown">
+            <option selected disabled>Sound</option>
+            <option value="melody">Melody</option>
+            <option value="key">Key</option>
+            <option value="beat">Beat</option>
+            <option value="reverb">Reverb</option>
+            <option value="playSpeed">Play Speed</option>
+        </select>
+    </div>
+
+</body>
+<style>
+    .container {
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    .sidebar{
+        padding: 20px;
+    }
+
+    #img1{
+        width: 100vw;
+        max-width: 500px;
+    }
+
+    .node0{
+        width: 100vw;
+        max-width: 500px;
+    }    
+    .node1{
+        width: 100vw;
+        max-width: 500px;
+    }
+    .node2{
+        width: 100vw;
+        max-width: 500px;
+    }
+    .node3{
+        width: 100vw;
+        max-width: 500px;
+    }
+
+    html{
+        background-color: #608537;
+    }
+
+    .interactBar {
+        position: fixed;
+        display: flex;
+        box-sizing: border-box;
+        justify-content: space-between;
+
+        bottom: 0;
+        width: 100vw;
+        padding: 10px;
+
+        background-color: #aceb64;
+
+        flex-wrap: wrap;
+    }
+
+    #dropdown{
+        border-style: hidden;
+        background:#608537;
+        color:aliceblue;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    body{
+        margin: 0%;
+    }
+
+
+</style>
+</html>
