@@ -1,6 +1,3 @@
-const tone = new Wad({source : 'sine', env:{attack: .01, hold:.1, release:.5}});
-const square = new Wad({source : 'square', env:{attack: .01, hold:.1, release:.5}});
-
 function startMusic(){
     AddArt();
 }
@@ -37,6 +34,7 @@ function rotateAnimation(el,speed){
 
   if(degrees % moisture0Spacing === 0)
   {
+    if (!navigator.userActivation.hasBeenActive){return;}
     var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
       source : 'square', env:{attack: .01, hold:.1, release:.8}});
     note.play();
@@ -44,6 +42,7 @@ function rotateAnimation(el,speed){
 
   if(degrees % moisture1Spacing === 0)
   {
+    if (!navigator.userActivation.hasBeenActive){return;}
     var note2 = new Wad({pitch: RandomNote(), source : 'sine', env:{attack: .01, hold:.1, release:.5}});
     note2.play();
   }
