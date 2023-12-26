@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/web-audio-daw"></script>
-    <script src="data.js"></script>
     <script src="music.js"></script>
     <script src="weather.js"></script>
     <title>Compost Your Internet</title>
@@ -24,26 +23,23 @@
         </div>    
     </div>
     <div class="interactBar">
-        <button id="dropdown"> Connect </button>
-        <select name="cars" id="dropdown">
+        <button class="dropdown" onclick="affectMusic()"> Connect </button>
+        <select name="data" class = "dropdown" id="data">
             <option selected disabled>Compost Data</option>
-            <optgroup label="Server Status">
-                <option value="SunExposure">Sun Exposure</option>
-                <option value="BatteryPercentage">Battery Charge</option>
-                <option value="OutdoorTemp">Outdoor Temperature</option>
-                <option value="LocalWeather">Local Weather</option>    
-            </optgroup>
-            <optgroup label="Compost Data">
-                <option value="CompostTemp">Temperature</option>
-                <option value="CompostMoisture">Moisture</option>
-                <option value="OutdoorTemp">Outdoor Temperature</option>
-                <option value="LocalWeather">Local Weather</option>    
+            <optgroup label="Weather Data">
+                <option value="moonphase">Moonphase</option>
+                <option value="temp">Air Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="precipprob">Precipitation Probability</option>
+                <option value="windspeed">Wind Speed</option>   
+                <option value="solarradiation">Solar Radiation</option>     
+   
             </optgroup>
         </select>
         <div style="padding: 10px; margin: 5px">to</div>
-        <select name="musicElement" id="dropdown">
+        <select name="musicElement" class = "dropdown" id="musicElement">
             <option selected disabled>Sound</option>
-            <option value="melody">Melody</option>
+            <option value="noteAmount">Note Amount</option>
             <option value="key">Key</option>
             <option value="beat">Beat</option>
             <option value="reverb">Reverb</option>
@@ -97,7 +93,7 @@
         display: flex;
         box-sizing: border-box;
         justify-content: space-between;
-        
+
         bottom: 0;
         width: 100vw;
         padding: 10px;
@@ -107,7 +103,7 @@
         flex-wrap: wrap;
     }
 
-    #dropdown{
+    .dropdown{
         border-style: hidden;
         background:#608537;
         color:aliceblue;

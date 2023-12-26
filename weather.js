@@ -25,19 +25,35 @@ fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/service
   
 var weatherData;
 
+var weatherValues = {};
+
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
-    console.log(`Moonphase is ${weatherData['days'][0].moonphase}.`);
-    console.log(`Temperature is ${weatherData['days'][0].temp}.`);
-    console.log(`Humidity is ${weatherData['days'][0].humidity}.`);
-    console.log(`Precipitation Probability is ${weatherData['days'][0].precipprob}.`);
-    console.log(`Windspeed is ${weatherData['days'][0].windspeed}.`);
-    console.log(`Cloud Cover is ${weatherData['days'][0].cloudcover}.`);
-    console.log(`Solar Radiation is ${weatherData['days'][0].solarradiation}.`);
+    weatherValues["moonphase"] = {value: weatherData['days'][0].moonphase, min: 0, max: 100};
+    console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
+
+    weatherValues["temp"] = {value: weatherData['days'][0].temp, min: -27, max: 100};
+    console.log(`Temperature is ${weatherValues["temp"].value}.`);
+
+    weatherValues["humidity"] = {value: weatherData['days'][0].humidity, min: 0, max: 100};
+    console.log(`Humidity is ${weatherValues["humidity"].value}.`);
+
+    weatherValues["precipprob"] = {value: weatherData['days'][0].precipprob, min: 0, max: 100};
+    console.log(`Precipitation Probability is ${weatherValues["precipprob"].value}.`);
+
+    weatherValues["windspeed"] = {value: weatherData['days'][0].windspeed, min: 0, max: 98};
+    console.log(`Windspeed is ${weatherValues["windspeed"].value}.`);
+
+    weatherValues["cloudcover"] = {value: weatherData['days'][0].cloudcover, min: 0, max: 100};
+    console.log(`Cloud Cover is ${weatherValues["cloudcover"].value}.`);
+    
+    weatherValues["solarradiation"] = {value: weatherData['days'][0].solarradiation, min: 0, max: 90};
+    console.log(`Solar Radiation is ${weatherValues["solarradiation"].value}.`);
 }
 
 function rangeData(dataValue, min, max, newMin, newMax)
 {
-  return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
+  return Math.ceil((((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin);
 }
+
