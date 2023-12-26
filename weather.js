@@ -28,4 +28,16 @@ var weatherData;
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
+    console.log(`Moonphase is ${weatherData['days'][0].moonphase}.`);
+    console.log(`Temperature is ${weatherData['days'][0].temp}.`);
+    console.log(`Humidity is ${weatherData['days'][0].humidity}.`);
+    console.log(`Precipitation Probability is ${weatherData['days'][0].precipprob}.`);
+    console.log(`Windspeed is ${weatherData['days'][0].windspeed}.`);
+    console.log(`Cloud Cover is ${weatherData['days'][0].cloudcover}.`);
+    console.log(`Solar Radiation is ${weatherData['days'][0].solarradiation}.`);
+}
+
+function rangeData(dataValue, min, max, newMin, newMax)
+{
+  return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
 }
