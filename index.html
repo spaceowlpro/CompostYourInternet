@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/web-audio-daw"></script>
-    <script src="data.js"></script>
     <script src="music.js"></script>
+    <script src="weather.js"></script>
     <title>Compost Your Internet</title>
 </head>
 <body>
     <div class="layout">
-        <div class="sidebar">
+        <div class="sidebar" style="color:aliceblue">
             Compost Your Internet
         </div>
         <div class="MusicBox">
@@ -19,21 +19,39 @@
                 <img id="img1" src="playLine.png">
             </div>
             <div id="holder"></div>
-            <script>rotateAnimation("img1",10);</script>    
+            <script>rotateAnimation("img1");</script>    
         </div>    
+    </div>
+    <div class="interactBar">
+        <button class="dropdown" onclick="affectMusic()"> Connect </button>
+        <select name="data" class = "dropdown" id="data">
+            <option selected disabled>Compost Data</option>
+            <optgroup label="Weather Data">
+                <option value="moonphase">Moonphase</option>
+                <option value="temp">Air Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="precipprob">Precipitation Probability</option>
+                <option value="windspeed">Wind Speed</option>   
+                <option value="solarradiation">Solar Radiation</option>     
+   
+            </optgroup>
+        </select>
+        <div style="padding: 10px; margin: 5px">to</div>
+        <select name="musicElement" class = "dropdown" id="musicElement">
+            <option selected disabled>Sound</option>
+            <option value="noteAmount">Note Amount</option>
+            <option value="key">Key</option>
+            <option value="beat">Beat</option>
+            <option value="reverbLevel">Reverb</option>
+            <option value="playSpeed">Play Speed</option>
+        </select>
     </div>
 
 </body>
 <style>
-    .layout{
-        display: grid;
-    }
-    .MusicBox{
-
-    }
     .container {
         position: fixed;
-        top: 40%;
+        top: 45%;
         left: 50%;
         -moz-transform: translateX(-50%) translateY(-50%);
         -webkit-transform: translateX(-50%) translateY(-50%);
@@ -69,6 +87,34 @@
     html{
         background-color: #608537;
     }
+
+    .interactBar {
+        position: fixed;
+        display: flex;
+        box-sizing: border-box;
+        justify-content: space-between;
+
+        bottom: 0;
+        width: 100vw;
+        padding: 10px;
+
+        background-color: #aceb64;
+
+        flex-wrap: wrap;
+    }
+
+    .dropdown{
+        border-style: hidden;
+        background:#608537;
+        color:aliceblue;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    body{
+        margin: 0%;
+    }
+
 
 </style>
 </html>
