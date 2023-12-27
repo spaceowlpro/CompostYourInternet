@@ -1,6 +1,3 @@
-const tone = new Wad({source : 'sine', env:{attack: .01, hold:.1, release:.5}});
-const square = new Wad({source : 'square', env:{attack: .01, hold:.1, release:.5}});
-
 function startMusic(){
     AddArt();
 }
@@ -11,11 +8,16 @@ var degrees = 0;
 const notes = "ABCDEFG";
 const octaves = "345";
 
-var reverbLevel = .4;
+var reverbLevel = 0;
 
 var tripCount = 0;
 
-function rotateAnimation(el,speed){
+var voices = {};
+
+var playSpeed = 10;
+
+
+function rotateAnimation(el){
   var elem = document.getElementById(el);
   if(navigator.userAgent.match("Chrome")){
     elem.style.WebkitTransform = "rotate("+degrees+"deg)";
@@ -28,24 +30,25 @@ function rotateAnimation(el,speed){
   } else {
     elem.style.transform = "rotate("+degrees+"deg)";
   }
-  looper = setTimeout('rotateAnimation(\''+el+'\','+speed+')',speed);
+  looper = setTimeout('rotateAnimation(\''+el+'\','+playSpeed+')',playSpeed);
   degrees++;
   if(degrees > 359){
     tripCount++;
     degrees = 1;
   }
 
-  if(degrees % moisture0Spacing === 0)
+  if(voices["count"] != null)
   {
-    var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
-      source : 'square', env:{attack: .01, hold:.1, release:.8}});
-    note.play();
-  }
-
-  if(degrees % moisture1Spacing === 0)
-  {
-    var note2 = new Wad({pitch: RandomNote(), source : 'sine', env:{attack: .01, hold:.1, release:.5}});
-    note2.play();
+    for(i = 0; i < voices["count"].value; i++)
+    {
+      if(degrees % voices[i].value === 0)
+      {
+        if (!navigator.userActivation.hasBeenActive){return;}
+        var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+          source : 'square', env:{attack: .01, hold:.1, release:.8}});
+        note.play();
+      }  
+    }  
   }
 
   if(tripCount >= 4)
@@ -86,8 +89,8 @@ function AddArt()
     image.setAttribute("src","node0.png");
 
     div.appendChild(image);
-    var holder = window.document.getElementById("holder");
-    holder.appendChild(div);
+    var layout = window.document.getElementsByClassName("layout");
+    layout[0].appendChild(div);
     image.style.transform = "rotate("+moisture0Spacing * i+"deg)";
     i++;
   }
@@ -104,12 +107,96 @@ function AddArt()
     image.setAttribute("src","node1.png");
 
     div.appendChild(image);
-    var holder = window.document.getElementById("holder");
-    holder.appendChild(div);
+    var layout = window.document.getElementsByClassName("layout");
+    layout[0].appendChild(div);
     image.style.transform = "rotate("+moisture1Spacing * j+"deg)";
     j++;
   }
   while((moisture1Spacing * j) < 360);
 
 }
-  
+
+
+function affectMusic()
+{
+  const dataField = document.getElementById("data");
+
+  const dataCategory = document.querySelector('select[name="data"] option:checked').parentElement.label;
+  const inputValue = dataField.value;
+
+  const musicField = document.getElementById("musicElement");
+
+  const musicCategory = document.querySelector('select[name="musicElement"] option:checked').parentElement.label;
+  const musicValue = musicField.value;
+
+
+  console.log(inputValue + ' selected from: ' + dataCategory + ' and connected to ' + musicValue);
+
+  if(musicValue == 'noteAmount')
+  {
+    if(voices["count"] == null)
+    {
+      NoteAmount(0, weatherValues[inputValue]);
+      voices["count"] = {value: 1};
+    }
+    else
+    {
+      if(voices["count"].value > 3)
+      {
+        alert("Reached maximum voices.");
+        return;
+      }
+      NoteAmount(voices["count"].value, weatherValues[inputValue]);
+      voices["count"].value++;
+    }
+  }
+
+  if(musicValue == 'reverbLevel')
+    ReverbLevel(weatherValues[inputValue]);
+
+  if(musicValue == 'playSpeed')
+    PlaySpeed(weatherValues[inputValue]);
+
+}
+
+function NoteAmount(voiceID, data)
+{
+  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
+
+  voices[voiceID] = {value: rangedData};
+  console.log("Voice" + voiceID + " will play every " + voices[voiceID].value);
+
+  var i = 1;
+  do
+  {
+    //create div and add it
+    var div = document.createElement("div");
+    div.setAttribute("class","container");
+    var image = document.createElement("img");
+    image.setAttribute("class","node" + voiceID);
+    image.setAttribute("src","node" + voiceID + ".png");
+
+    div.appendChild(image);
+    var layout = window.document.getElementsByClassName("layout");
+    layout[0].appendChild(div);
+    image.style.transform = "rotate("+rangedData * i+"deg)";
+    i++;
+  }
+  while((rangedData * i) < 360);
+}
+
+function ReverbLevel(data)
+{
+  var rangedData = rangeData(data.value, data.min, data.max, 0, 1);
+
+  //round to 2 decimals
+  rangedData = Math.round((rangedData + Number.EPSILON) * 100) / 100;
+
+  console.log('setting reverb to ' + rangedData);
+  reverbLevel = rangedData;
+}
+
+function PlaySpeed(data)
+{
+  playSpeed = rangeData(data.value, data.min, data.max, 0, 20);
+}

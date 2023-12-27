@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/web-audio-daw"></script>
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/opendyslexic" type="text/css"/>
+    <script src="data.js"></script>
+    <script src="music.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar"> Compost Your Internet </div>
+        <div class="container">
+            <img id="img1" src="playLine.png">
+        </div>
+        <script>rotateAnimation("img1",10);</script>
+    </div>
+</body>
+<style>
+    .layout{
+        display: grid;
+        grid-template-areas: 'sideArea playArea';
+        background-color: #608537;
+        justify-items: center;
+        max-height: 97vh;
+    }
+
+    .sidebar{
+        padding: 20px;
+        text-align: center;
+        grid-area: sideArea;
+        background-color: #bed9a0;
+        outline-width: 14px;
+        outline-color: #e7fece;
+        outline-style: solid;
+
+        font-family: 'OpenDyslexic3Regular';
+        font-weight: normal;
+        font-style: normal;
+        
+        width: 100%;
+    }
+
+    .musicBox{
+        text-align: center;
+        grid-area: playArea;
+        width: 100%;
+    }
+
+    .container {
+        grid-area: playArea;
+    }
+
+    #img1{
+
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+        
+    }
+
+    .node0{
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+    }    
+    .node1{
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+    }
+    .node2{
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+    }
+    .node3{
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+    }
+
+    #holder{
+        grid-area: playArea;
+        scale: 70%;
+        translate: 0px -100px;
+    }
+
+    html{
+        background-color: #e7fece;
+    }
+
+</style>
+</html>

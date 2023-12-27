@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="layout">
+        <div> Thing </div>
+        <div> Other Thing </div>
+    </div>
+</body>
+<style>
+        .layout{
+        display: grid;
+        grid-template-areas: 'sideArea playArea';
+        background-color: #608537;
+        justify-items: center;
+        max-height: 97vh;
+
+        .layout > div{
+            margin: 10px;
+            background-color: aliceblue;
+        }
+    }
+</style>
+</html>
