@@ -14,8 +14,10 @@ var tripCount = 0;
 
 var voices = {};
 
+var playSpeed = 10;
 
-function rotateAnimation(el,speed){
+
+function rotateAnimation(el){
   var elem = document.getElementById(el);
   if(navigator.userAgent.match("Chrome")){
     elem.style.WebkitTransform = "rotate("+degrees+"deg)";
@@ -28,7 +30,7 @@ function rotateAnimation(el,speed){
   } else {
     elem.style.transform = "rotate("+degrees+"deg)";
   }
-  looper = setTimeout('rotateAnimation(\''+el+'\','+speed+')',speed);
+  looper = setTimeout('rotateAnimation(\''+el+'\','+playSpeed+')',playSpeed);
   degrees++;
   if(degrees > 359){
     tripCount++;
@@ -152,6 +154,9 @@ function affectMusic()
   if(musicValue == 'reverbLevel')
     ReverbLevel(weatherValues[inputValue]);
 
+  if(musicValue == 'playSpeed')
+    PlaySpeed(weatherValues[inputValue]);
+
 }
 
 function NoteAmount(voiceID, data)
@@ -189,4 +194,9 @@ function ReverbLevel(data)
 
   console.log('setting reverb to ' + rangedData);
   reverbLevel = rangedData;
+}
+
+function PlaySpeed(data)
+{
+  playSpeed = rangeData(data.value, data.min, data.max, 0, 20);
 }
