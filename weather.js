@@ -54,6 +54,6 @@ function parseWeatherData(weatherData)
 
 function rangeData(dataValue, min, max, newMin, newMax)
 {
-  return Math.ceil((((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin);
+  return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
 }
 

@@ -8,7 +8,7 @@ var degrees = 0;
 const notes = "ABCDEFG";
 const octaves = "345";
 
-var reverbLevel = .4;
+var reverbLevel = 0;
 
 var tripCount = 0;
 
@@ -35,35 +35,19 @@ function rotateAnimation(el,speed){
     degrees = 1;
   }
 
-  if(voices[0] != null)
+  if(voices["count"] != null)
   {
-    if(degrees % voices[0].value === 0)
+    for(i = 0; i < voices["count"].value; i++)
     {
-      if (!navigator.userActivation.hasBeenActive){return;}
-      var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
-        source : 'square', env:{attack: .01, hold:.1, release:.8}});
-      note.play();
-      console.log("Ding!");
+      if(degrees % voices[i].value === 0)
+      {
+        if (!navigator.userActivation.hasBeenActive){return;}
+        var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+          source : 'square', env:{attack: .01, hold:.1, release:.8}});
+        note.play();
+      }  
     }  
   }
-
-  //commented out due to console errors
-  /*
-  if(degrees % moisture0Spacing === 0)
-  {
-    if (!navigator.userActivation.hasBeenActive){return;}
-    var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
-      source : 'square', env:{attack: .01, hold:.1, release:.8}});
-    note.play();
-  }
-
-  if(degrees % moisture1Spacing === 0)
-  {
-    if (!navigator.userActivation.hasBeenActive){return;}
-    var note2 = new Wad({pitch: RandomNote(), source : 'sine', env:{attack: .01, hold:.1, release:.5}});
-    note2.play();
-  }
-  */
 
   if(tripCount >= 4)
   {
@@ -148,14 +132,31 @@ function affectMusic()
 
   if(musicValue == 'noteAmount')
   {
-    NoteAmount(0, weatherValues[inputValue]);
+    if(voices["count"] == null)
+    {
+      NoteAmount(0, weatherValues[inputValue]);
+      voices["count"] = {value: 1};
+    }
+    else
+    {
+      if(voices["count"].value > 3)
+      {
+        alert("Reached maximum voices.");
+        return;
+      }
+      NoteAmount(voices["count"].value, weatherValues[inputValue]);
+      voices["count"].value++;
+    }
   }
+
+  if(musicValue == 'reverbLevel')
+    ReverbLevel(weatherValues[inputValue]);
 
 }
 
 function NoteAmount(voiceID, data)
 {
-  var rangedData = rangeData(data.value, data.min, data.max, 0, 360);
+  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
 
   voices[voiceID] = {value: rangedData};
   console.log("Voice" + voiceID + " will play every " + voices[voiceID].value);
@@ -167,8 +168,8 @@ function NoteAmount(voiceID, data)
     var div = document.createElement("div");
     div.setAttribute("class","container");
     var image = document.createElement("img");
-    image.setAttribute("class","node0");
-    image.setAttribute("src","node0.png");
+    image.setAttribute("class","node" + voiceID);
+    image.setAttribute("src","node" + voiceID + ".png");
 
     div.appendChild(image);
     var layout = window.document.getElementsByClassName("layout");
@@ -177,4 +178,15 @@ function NoteAmount(voiceID, data)
     i++;
   }
   while((rangedData * i) < 360);
+}
+
+function ReverbLevel(data)
+{
+  var rangedData = rangeData(data.value, data.min, data.max, 0, 1);
+
+  //round to 2 decimals
+  rangedData = Math.round((rangedData + Number.EPSILON) * 100) / 100;
+
+  console.log('setting reverb to ' + rangedData);
+  reverbLevel = rangedData;
 }
