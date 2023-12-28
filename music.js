@@ -16,16 +16,16 @@ var voices = {};
 
 var playSpeed = 10;
 
-var note0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+var voice0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
   source : 'square', env:{attack: .01, hold:.1, release:.8}});
 
-var note1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+var voice1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
   source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
-var note2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+var voice2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
   source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
 
-var note3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+var voice3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
   source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
 
@@ -61,16 +61,16 @@ function rotateAnimation(el){
         switch(i)
         {
           case 0:
-            note0.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            voice0.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
             break;
           case 1:
-            note1.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            voice1.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
             break;
           case 2:
-            note2.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            voice2.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
             break;
           case 3:
-            note3.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            voice3.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
             break;  
         }
       }  
