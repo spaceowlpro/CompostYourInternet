@@ -21,6 +21,9 @@ const voice2 = new Wad({pitch: RandomNote(), volume: .3,
 const voice3 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'sawtooth', env:{attack: .01, hold:.1, release:.8}});
 
+const master = new Wad.Poly({
+  reverb  : {impulse : "widehall.wav", wet : reverbLevel}
+});
 
 var reverbLevel = 0;
 
@@ -222,6 +225,23 @@ function NoteAmount(voiceID, data)
 
   voices[voiceID].amount = i;
   console.log(voices[voiceID].notePositions);
+
+  switch(voiceID)
+  {
+    case 0:
+      master.add(voice0)
+      break; 
+    case 1:
+      master.add(voice1)
+      break; 
+    case 2:
+      master.add(voice2)
+      break; 
+    case 3:
+      master.add(voice3)
+      break; 
+            
+  }
 }
 
 function ReverbLevel(data)
@@ -234,11 +254,7 @@ function ReverbLevel(data)
   console.log('setting reverb to ' + rangedData);
   reverbLevel = rangedData;
 
-  voice0.reverb.wet = reverbLevel;
-  voice1.reverb.wet = reverbLevel;
-  voice2.reverb.wet = reverbLevel;
-  voice3.reverb.wet = reverbLevel;
-
+  master.reverb.wet = reverbLevel;
 }
 
 function PlaySpeed(data)
