@@ -30,7 +30,7 @@ var weatherValues = {};
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
-    weatherValues["moonphase"] = {value: weatherData['days'][0].moonphase, min: 0, max: 100};
+    weatherValues["moonphase"] = {value: weatherData['days'][0].moonphase, min: 0, max: 1};
     console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
 
     weatherValues["temp"] = {value: weatherData['days'][0].temp, min: -27, max: 100};

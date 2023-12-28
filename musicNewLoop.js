@@ -1,5 +1,5 @@
 //gameloop stuff
-const fps = 15;
+const fps = 60;
 const frameDuration = 1000 / fps;
 
 let prevTime = performance.now();
@@ -9,16 +9,16 @@ let accumulatedFrameTime = 0;
 const notes = "ABCDEFG";
 const octaves = "345";
 
-var note0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+var voice0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
   source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
-var note1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+var voice1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
   source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
 
-var note2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+var voice2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
   source : 'square', env:{attack: .01, hold:.1, release:.8}});
 
-var note3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+var voice3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
   source : 'sawtooth', env:{attack: .01, hold:.1, release:.8}});
 
 
@@ -37,15 +37,16 @@ var degrees = 0;
 
 
 //main time loop
-function gameloop(time) {
+async function gameloop(time) {
+  //play around with moving render in and outside the while loop
   const elapsedTimeBetweenFrames = time - prevTime;
   prevTime = time;
   accumulatedFrameTime += elapsedTimeBetweenFrames;
   while (accumulatedFrameTime >= frameDuration) {
     update(frameDuration);
+    render();
     accumulatedFrameTime -= frameDuration;
   }
-  render();
   requestAnimationFrame(gameloop);
 }
 requestAnimationFrame(gameloop);
@@ -56,20 +57,28 @@ function update(frameDuration)
 }
 
 //render loop
-function render()
+async function render()
 {
   const elem = document.getElementById("img1");
 
+  await MovePlayhead(elem);
+
+  CheckForNotes();
+
+}
+
+async function MovePlayhead(playhead)
+{
   if(navigator.userAgent.match("Chrome")){
-    elem.style.WebkitTransform = "rotate("+degrees+"deg)";
+    playhead.style.WebkitTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("Firefox")){
-    elem.style.MozTransform = "rotate("+degrees+"deg)";
+    playhead.style.MozTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("MSIE")){
-    elem.style.msTransform = "rotate("+degrees+"deg)";
+    playhead.style.msTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("Opera")){
-    elem.style.OTransform = "rotate("+degrees+"deg)";
+    playhead.style.OTransform = "rotate("+degrees+"deg)";
   } else {
-    elem.style.transform = "rotate("+degrees+"deg)";
+    playhead.style.transform = "rotate("+degrees+"deg)";
   }
 
   degrees += 1 * playSpeed;
@@ -83,45 +92,59 @@ function render()
         notesPlayed[i].notePositions.length = 0;
     }
   }
+}
 
+async function CheckForNotes()
+{
   for(i = 0; i < 4; i++)
   {
     if(voices[i] != null)
     {
-      for (let v = 0; v < voices[i].notePositions.length; v++) 
-      {      
-        var element = voices[i].notePositions[v];
-        if(!notesPlayed[i].notePositions.includes(element))
-        {
-          if(degrees >= element)
-          {
-            //play note!
-            switch(i)
-            {
-              case 0:
-                note0.play({pitch: RandomNote()});
-                break;
-              case 1:
-                note1.play({pitch: RandomNote()});
-                break;
-              case 2:
-                note2.play({pitch: RandomNote()});
-                break;
-              case 3:
-                note3.play({pitch: RandomNote()});
-                break;  
-            }    
-            notesPlayed[i].notePositions.push(element);
-          }
-        }
-      }
+      CheckForNoteInVoice(voices[i], i);
     }
   }  
 }
 
+async function CheckForNoteInVoice(voice, i)
+{
+  for (let v = 0; v < voice.notePositions.length; v++) 
+  {      
+    var element = voice.notePositions[v];
+    if(!notesPlayed[i].notePositions.includes(element))
+    {
+      if(degrees >= element)
+      {
+        //play note!
+        switch(i)
+        {
+          case 0:
+            PlayRandomNote(voice0);
+            break;
+          case 1:
+            PlayRandomNote(voice1);
+            break;
+          case 2:
+            PlayRandomNote(voice2);
+            break;
+          case 3:
+            PlayRandomNote(voice3);
+            break;  
+        }    
+        notesPlayed[i].notePositions.push(element);
+      }
+    }
+  }
+}
+
+async function PlayRandomNote(voiceToPlay)
+{
+  var randomNote = await RandomNote();
+  voiceToPlay.play({pitch: randomNote});
+  voiceToPlay.stop();
+}
 
 //music stuff
-function RandomNote()
+async function RandomNote()
 {
   var note;
   
@@ -211,10 +234,10 @@ function ReverbLevel(data)
   console.log('setting reverb to ' + rangedData);
   reverbLevel = rangedData;
 
-  note0.reverb.wet = reverbLevel;
-  note1.reverb.wet = reverbLevel;
-  note2.reverb.wet = reverbLevel;
-  note3.reverb.wet = reverbLevel;
+  voice0.reverb.wet = reverbLevel;
+  voice1.reverb.wet = reverbLevel;
+  voice2.reverb.wet = reverbLevel;
+  voice3.reverb.wet = reverbLevel;
 
 }
 
@@ -254,16 +277,16 @@ function NoteShape(voiceID, data, dataType)
   switch(voiceID)
   {
     case 1:
-      note0.source = shape;
+      voice0.source = shape;
       break;
     case 2:
-      note1.source = shape;
+      voice1.source = shape;
       break;
     case 3:
-      note2.source = shape;
+      voice2.source = shape;
       break;
     case 4:
-      note3.source = shape;
+      voice3.source = shape;
       break;
   }
 }
