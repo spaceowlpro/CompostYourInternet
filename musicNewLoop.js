@@ -5,22 +5,21 @@ const frameDuration = 1000 / fps;
 let prevTime = performance.now();
 let accumulatedFrameTime = 0;
 
-
 //music stuff
 const notes = "ABCDEFG";
 const octaves = "345";
 
 var note0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
-  source : 'square', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
 var note1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
-
-var note2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
   source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
 
+var note2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+  source : 'square', env:{attack: .01, hold:.1, release:.8}});
+
 var note3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sawtooth', env:{attack: .01, hold:.1, release:.8}});
 
 
 var reverbLevel = 0;
@@ -116,32 +115,8 @@ function render()
           }
         }
       }
-
-      /*
-      if(Math.ceil(degrees) % voices[i].value === 0)
-      {
-        console.log(Math.ceil(degrees));
-        if (!navigator.userActivation.hasBeenActive){return;}
-        switch(i)
-        {
-          case 0:
-            note0.play({pitch: RandomNote()});
-            break;
-          case 1:
-            note1.play({pitch: RandomNote()});
-            break;
-          case 2:
-            note2.play({pitch: RandomNote()});
-            break;
-          case 3:
-            note3.play({pitch: RandomNote()});
-            break;  
-        }
-      }    
-      */
     }
   }  
-
 }
 
 
@@ -173,7 +148,7 @@ function affectMusic()
   console.log(inputValue + ' selected from: ' + dataCategory + ' and connected to ' + musicValue);
 
   if(musicValue == 'noteAmount')
-      NoteAmount(parseInt(musicCategory.slice(-1)), weatherValues[inputValue]);
+    NoteAmount(voiceIDFromStringValue(musicCategory), weatherValues[inputValue]);
 
   if(musicValue == 'reverbLevel')
     ReverbLevel(weatherValues[inputValue]);
@@ -181,6 +156,14 @@ function affectMusic()
   if(musicValue == 'playSpeed')
     PlaySpeed(weatherValues[inputValue]);
 
+  if(musicValue == 'shape')
+    NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], dataCategory);
+
+}
+
+function voiceIDFromStringValue(value)
+{
+  return parseInt(value.slice(-1));
 }
 
 function NoteAmount(voiceID, data)
@@ -238,4 +221,49 @@ function ReverbLevel(data)
 function PlaySpeed(data)
 {
   playSpeed = rangeData(data.value, data.min, data.max, 0, 1.5);
+}
+
+function NoteShape(voiceID, data, dataType)
+{
+  //return range between 0-4 and clamp it to the next int as a category
+  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
+
+  //set as sine as failsafe
+  var shape = 'sine';
+
+  //potentially use dataType to change the direction of the shape selection
+  //maybe you want sound to be more mellow if the moon is full etc
+
+  console.log('ranged data = ' + rangedData);
+  switch(rangedData)
+  {
+    case 1:
+      shape = 'sine';
+      break;
+    case 2:
+      shape = 'triangle';
+      break;
+    case 3:
+      shape = 'square';
+      break;
+    case 4:
+      shape = 'sawtooth';
+      break;
+  }
+
+  switch(voiceID)
+  {
+    case 1:
+      note0.source = shape;
+      break;
+    case 2:
+      note1.source = shape;
+      break;
+    case 3:
+      note2.source = shape;
+      break;
+    case 4:
+      note3.source = shape;
+      break;
+  }
 }
