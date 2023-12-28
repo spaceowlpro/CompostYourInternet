@@ -1,3 +1,4 @@
+
 function startMusic(){
     AddArt();
 }
@@ -7,7 +8,6 @@ var degrees = 0;
 
 const notes = "ABCDEFG";
 const octaves = "345";
-
 var reverbLevel = 0;
 
 var tripCount = 0;
@@ -16,9 +16,22 @@ var voices = {};
 
 var playSpeed = 10;
 
+var note0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+  source : 'square', env:{attack: .01, hold:.1, release:.8}});
+
+var note1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+
+var note2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+  source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
+
+var note3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+
 
 function rotateAnimation(el){
   var elem = document.getElementById(el);
+  
   if(navigator.userAgent.match("Chrome")){
     elem.style.WebkitTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("Firefox")){
@@ -30,6 +43,7 @@ function rotateAnimation(el){
   } else {
     elem.style.transform = "rotate("+degrees+"deg)";
   }
+
   looper = setTimeout('rotateAnimation(\''+el+'\','+playSpeed+')',playSpeed);
   degrees++;
   if(degrees > 359){
@@ -44,9 +58,21 @@ function rotateAnimation(el){
       if(degrees % voices[i].value === 0)
       {
         if (!navigator.userActivation.hasBeenActive){return;}
-        var note = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : reverbLevel},
-          source : 'square', env:{attack: .01, hold:.1, release:.8}});
-        note.play();
+        switch(i)
+        {
+          case 0:
+            note0.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            break;
+          case 1:
+            note1.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            break;
+          case 2:
+            note2.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            break;
+          case 3:
+            note3.play({pitch: RandomNote(), reverb : {impulse : "widehall.wav", wet: reverbLevel}});
+            break;  
+        }
       }  
     }  
   }
