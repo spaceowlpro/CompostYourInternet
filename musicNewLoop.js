@@ -9,16 +9,16 @@ let accumulatedFrameTime = 0;
 const notes = "ABCDEFG";
 const octaves = "345";
 
-var voice0 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+const voice0 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
-var voice1 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+const voice1 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
 
-var voice2 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+const voice2 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'square', env:{attack: .01, hold:.1, release:.8}});
 
-var voice3 = new Wad({pitch: RandomNote(), volume: .3, reverb  : {impulse : "widehall.wav", wet : 0},
+const voice3 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'sawtooth', env:{attack: .01, hold:.1, release:.8}});
 
 
