@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/web-audio-daw"></script>
-    <script src="music.js"></script>
+    <script src="musicNewLoop.js"></script>
     <script src="weather.js"></script>
     <title>Compost Your Internet</title>
 </head>
@@ -19,7 +19,6 @@
                 <img id="img1" src="playLine.png">
             </div>
             <div id="holder"></div>
-            <script>rotateAnimation("img1");</script>    
         </div>    
     </div>
     <div class="interactBar">
@@ -38,9 +37,24 @@
         </select>
         <div style="padding: 10px; margin: 5px">to</div>
         <select name="musicElement" class = "dropdown" id="musicElement">
-            <option selected disabled>Sound</option>
-            <option value="noteAmount">Note Amount</option>
+            <option selected disabled>Music</option>
             <option value="key">Key</option>
+            <optgroup label="Voice 1">
+                <option value="noteAmount">Note Amount</option>
+                <option value="shape">Shape</option>
+            </optgroup>
+            <optgroup label="Voice 2">
+                <option value="noteAmount">Note Amount</option>
+                <option value="shape">Shape</option>
+            </optgroup>
+            <optgroup label="Voice 3">
+                <option value="noteAmount">Note Amount</option>
+                <option value="shape">Shape</option>
+            </optgroup>
+            <optgroup label="Voice 4">
+                <option value="noteAmount">Note Amount</option>
+                <option value="shape">Shape</option>
+            </optgroup>
             <option value="beat">Beat</option>
             <option value="reverbLevel">Reverb</option>
             <option value="playSpeed">Play Speed</option>
