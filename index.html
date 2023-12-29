@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="layout">
-        <div class="sidebar" style="color:aliceblue">
+        <div class="topbar">
             Compost Your Internet
         </div>
         <div class="MusicBox">
@@ -22,47 +22,50 @@
         </div>    
     </div>
     <div class="interactBar">
-        <button class="dropdown" onclick="affectMusic()"> Connect </button>
+        <button class="submitButton" onclick="affectMusic()"> Connect </button>
         <select name="data" class = "dropdown" id="data">
-            <option selected disabled>Compost Data</option>
+            <option selected disabled>Data</option>
             <optgroup label="Weather Data">
                 <option value="moonphase">Moonphase</option>
                 <option value="temp">Air Temperature</option>
                 <option value="humidity">Humidity</option>
                 <option value="precipprob">Precipitation Probability</option>
                 <option value="windspeed">Wind Speed</option>   
-                <option value="solarradiation">Solar Radiation</option>     
-   
+                <option value="solarradiation">Solar Radiation</option>
             </optgroup>
         </select>
-        <div style="padding: 10px; margin: 5px">to</div>
+        <div class="text">to</div>
         <select name="musicElement" class = "dropdown" id="musicElement">
             <option selected disabled>Music</option>
             <option value="key">Key</option>
+            <option value="playSpeed">Play Speed</option>
+            <option value="reverbLevel">Reverb</option>
             <optgroup label="Voice 1">
-                <option value="noteAmount">Note Amount</option>
-                <option value="shape">Shape</option>
+                <option value="noteAmount">Note Positions</option>
+                <option value="shape">Note Shape</option>
             </optgroup>
             <optgroup label="Voice 2">
-                <option value="noteAmount">Note Amount</option>
-                <option value="shape">Shape</option>
+                <option value="noteAmount">Note Positions</option>
+                <option value="shape">Note Shape</option>
             </optgroup>
             <optgroup label="Voice 3">
-                <option value="noteAmount">Note Amount</option>
-                <option value="shape">Shape</option>
+                <option value="noteAmount">Note Positions</option>
+                <option value="shape">Note Shape</option>
             </optgroup>
             <optgroup label="Voice 4">
-                <option value="noteAmount">Note Amount</option>
-                <option value="shape">Shape</option>
+                <option value="noteAmount">Note Positions</option>
+                <option value="shape">Note Shape</option>
             </optgroup>
-            <option value="beat">Beat</option>
-            <option value="reverbLevel">Reverb</option>
-            <option value="playSpeed">Play Speed</option>
         </select>
     </div>
 
 </body>
 <style>
+    @font-face {
+        font-family: openDyslexic;
+        src: url(OpenDyslexic-Regular.otf);
+    }       
+
     .container {
         position: fixed;
         top: 45%;
@@ -72,8 +75,10 @@
         transform: translateX(-50%) translateY(-50%);
     }
 
-    .sidebar{
+    .topbar{
         padding: 20px;
+        color: #e5fccd;
+        font-family: openDyslexic;
     }
 
     #img1{
@@ -106,23 +111,73 @@
         position: fixed;
         display: flex;
         box-sizing: border-box;
-        justify-content: space-between;
+        justify-content: space-around;
 
         bottom: 0;
         width: 100vw;
-        padding: 10px;
+        padding: 5px;
 
-        background-color: #aceb64;
+        background-color: #e5fccd;
 
         flex-wrap: wrap;
     }
 
     .dropdown{
         border-style: hidden;
+        display: inline-block;
         background:#608537;
-        color:aliceblue;
-        padding: 10px;
-        margin: 5px;
+        border-color: #608537;
+        color: #e5fccd;
+        border-radius: 25px;
+
+        font-family: openDyslexic;
+
+        text-align: center;
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+
+    }
+    .dropdown:focus{
+        outline: 0;
+    }
+    .dropdown:hover{
+        background:#5c7e35;
+    }
+
+    .submitButton{
+        background:#e5fccd;
+        border-color: #608537;
+        color:black;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+
+        font-family: openDyslexic;
+
+        border-style: solid;
+        border-radius: 25px;
+        border-width: 3px;
+    }
+    .submitButton:hover {     
+        border-style: dashed;
+    }
+    .submitButton:active {     
+        border-style: dotted;
+    }
+
+
+    .text{
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+
+        font-family: openDyslexic;
+        text-align: center;
     }
 
     body{
