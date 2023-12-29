@@ -24,24 +24,33 @@ let noteArray = [
 ];
 
 let currentKey = ['A','B','C','D','E','F','G'];
+var reverbLevel = .1;
 
 const voice0 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sine', env:{attack: .5, hold:.1, release:.8}});
 
 const voice1 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'triangle', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
 const voice2 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'square', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
 const voice3 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sawtooth', env:{attack: .01, hold:.1, release:.8}});
+  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
 
 const master = new Wad.Poly({
-  reverb  : {impulse : "widehall.wav", wet : reverbLevel}
+  reverb  : {
+    impulse : "widehall.wav", 
+    wet : .3,
+  },
+  compressor : {
+    attack    : .003, // The amount of time, in seconds, to reduce the gain by 10dB. This parameter ranges from 0 to 1.
+    knee      : 30,  // A decibel value representing the range above the threshold where the curve smoothly transitions to the "ratio" portion. This parameter ranges from 0 to 40.
+    ratio     : 12,   // The amount of dB change in input for a 1 dB change in output. This parameter ranges from 1 to 20.
+    release   : .25,  // The amount of time (in seconds) to increase the gain by 10dB. This parameter ranges from 0 to 1.
+    threshold : -24,  // The decibel value above which the compression will start taking effect. This parameter ranges from -100 to 0.
+  }
 });
-
-var reverbLevel = 0;
 
 var tripCount = 0;
 
@@ -226,6 +235,12 @@ function NoteAmount(voiceID, data)
 
   console.log("Voice" + voiceID + " will play every " + voices[voiceID].value);
 
+  const oldNodes = document.getElementsByClassName('node' + voiceID);
+  const nodeArray = Array.from(oldNodes);
+
+  if(nodeArray.length > 0)
+    nodeArray.forEach(node => node.remove());
+
   var i = 1;
   do
   {
@@ -264,6 +279,8 @@ function NoteAmount(voiceID, data)
       break; 
             
   }
+
+  console.log(master);
 }
 
 function ReverbLevel(data)
@@ -277,6 +294,7 @@ function ReverbLevel(data)
   reverbLevel = rangedData;
 
   master.reverb.wet = reverbLevel;
+  console.log(master);
 }
 
 function PlaySpeed(data)
