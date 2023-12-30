@@ -27,6 +27,7 @@ let noteArray = [
 
 let currentKey = ['A','B','C','D','E','F','G'];
 var reverbLevel = .1;
+let voiceShapes = ["sine", "sine", "sine", "sine"];
 
 const voice0 = new Wad({pitch: RandomNote(), volume: .3,
   source : 'sine', env:{attack: .5, hold:.1, release:.8}});
@@ -253,7 +254,7 @@ function NoteAmount(voiceID, data)
     div.setAttribute("class","container");
     var image = document.createElement("img");
     image.setAttribute("class","node" + voiceID);
-    image.setAttribute("src","node" + voiceID + ".png");
+    image.setAttribute("src","images/"+ voiceShapes[voiceID] + voiceID + ".png");
 
     div.appendChild(image);
     var layout = window.document.getElementsByClassName("layout");
@@ -321,18 +322,20 @@ function NoteShape(voiceID, data, dataType)
   switch(rangedData)
   {
     case 1:
-      shape = 'sine';
+      voiceShapes[voiceID - 1] = 'sine';
       break;
     case 2:
-      shape = 'triangle';
+      voiceShapes[voiceID - 1] = 'triangle';
       break;
     case 3:
-      shape = 'square';
+      voiceShapes[voiceID - 1] = 'square';
       break;
     case 4:
-      shape = 'sawtooth';
+      voiceShapes[voiceID - 1] = 'sawtooth';
       break;
   }
+
+  shape = voiceShapes[voiceID - 1];
 
   switch(voiceID)
   {
@@ -349,6 +352,17 @@ function NoteShape(voiceID, data, dataType)
       voice3.source = shape;
       break;
   }
+  ChangeShapeImages(voiceID);
+
+}
+
+async function ChangeShapeImages(voiceID)
+{
+  let nodes = document.getElementsByClassName("node" + (voiceID-1));
+  console.log(nodes);
+  let nodeArray = Array.from(nodes);
+  console.log(nodeArray);
+  nodeArray.forEach(node => node.src = "images/"+ voiceShapes[voiceID - 1] + (voiceID - 1) + ".png");
 }
 
 async function SetKey(data, dataCategory)
