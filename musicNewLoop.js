@@ -114,7 +114,7 @@ async function MovePlayhead(playhead)
   degrees += 1 * playSpeed;
   if(degrees > 359){
     tripCount++;
-    degrees = 1;
+    degrees = 0;
 
     for(i = 0; i < 4; i++)
     {
@@ -188,7 +188,7 @@ async function RandomNote()
 function affectMusic()
 {
   if(loading){return;}
-  
+
   const dataField = document.getElementById("data");
 
   const dataCategory = document.querySelector('select[name="data"] option:checked').parentElement.label;
