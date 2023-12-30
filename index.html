@@ -59,6 +59,14 @@
         </select>
     </div>
 
+    <div class="popupWindow">
+        <div class="popupText">
+            Loading Weather Data From Server
+        </div>
+    </div>
+
+    <button class="tutorialButton">?</button>
+
 </body>
 <style>
     @font-face {
@@ -145,6 +153,7 @@
     }
     .dropdown:hover{
         background:#5c7e35;
+        cursor: pointer;
     }
 
     .submitButton{
@@ -164,6 +173,7 @@
     }
     .submitButton:hover {     
         border-style: dashed;
+        cursor: pointer;
     }
     .submitButton:active {     
         border-style: dotted;
@@ -180,10 +190,59 @@
         text-align: center;
     }
 
+    .popupWindow{
+        border: 5px solid;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10px;
+        z-index: 1;
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        width: 50vw;
+        height: 50vh;
+
+        background-color: #e5fccd;
+        text-align: center;
+
+        font-family: openDyslexic;
+    }
+    .popupWindow:hover{
+        cursor: progress;
+    }
+
+    .popupText{
+        width: 80%;
+        margin: 10px;
+        padding: 5px;
+    }
+
+    .tutorialButton{
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(-20px, 5px);
+
+        background-color: transparent;
+        border-style: hidden;
+
+        font-family: openDyslexic;
+        font-size: xx-large;
+    }
+    .tutorialButton:hover{
+        cursor: pointer;
+    }
+    
+
     body{
         margin: 0%;
     }
-
 
 </style>
 </html>

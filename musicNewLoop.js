@@ -5,6 +5,8 @@ const frameDuration = 1000 / fps;
 let prevTime = performance.now();
 let accumulatedFrameTime = 0;
 
+var loading = true;
+
 //music stuff
 const notes = "ABCDEFG";
 const octaves = "345";
@@ -185,6 +187,8 @@ async function RandomNote()
 
 function affectMusic()
 {
+  if(loading){return;}
+  
   const dataField = document.getElementById("data");
 
   const dataCategory = document.querySelector('select[name="data"] option:checked').parentElement.label;

@@ -1,4 +1,4 @@
-fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/fort%20wayne%20in?unitGroup=metric&include=current&key=RWFJFVQTWSMVX78RMXGMXK33V&contentType=json", {
+fetch("https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-03e4fdc6-f760-4ce0-902e-d4df44ec875e/default/WeatherData", {
   "method": "GET"
   })
 .then(response => {
@@ -12,7 +12,9 @@ fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/service
     //response now contains parsed JSON ready for use
     weatherData = response;
     parseWeatherData(weatherData);
-  
+    document.getElementsByClassName('popupWindow')[0].style.display = "none";
+    loading = false;
+
   }).catch((errorResponse) => {
     if (errorResponse.text) { //additional error information
       errorResponse.text().then( errorMessage => {
