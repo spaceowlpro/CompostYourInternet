@@ -12,7 +12,7 @@ fetch("https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-03e4fdc6-f760-4c
     //response now contains parsed JSON ready for use
     weatherData = response;
     parseWeatherData(weatherData);
-    document.getElementsByClassName('popupWindow')[0].style.display = "none";
+    document.getElementById('loadingPopup').style.display = "none";
     loading = false;
 
   }).catch((errorResponse) => {

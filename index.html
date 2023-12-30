@@ -59,13 +59,68 @@
         </select>
     </div>
 
-    <div class="popupWindow">
+    <div class="popupWindow" id="loadingPopup">
         <div class="popupText">
             Loading Weather Data From Server
         </div>
     </div>
 
-    <button class="tutorialButton">?</button>
+    <div id="blocker" onclick="hidePopup()"></div>
+    <div class="popupWindow" id="tutorialPopup">
+        <div class="popupText">
+            <em><u>
+                Quick Start
+            </em></u>
+            <br>
+            To get some music going, select any data from the "Data" field, select "Note Positions" for any voice in the "Music" field, and hit the "Connect" button!
+            <br><br>
+            <em><u>
+                What is this?
+            </em></u>
+            <br>
+            This is the start to Compost Your Internet,
+            a collaboration with a foodscrap composting 
+            company called Dirt Wain.
+            Right now, it allows the weather local to
+            Dirt Wain in Fort Wayne, IN, USA, to make musical
+            choices depending on what weather data you choose
+            to connect to the music. By May of 2024 it will also
+            allow you to control the music with data measured
+            live from the compost itself.
+            <br><br>
+            <em><u>
+                Funding
+            </em></u>
+            <br>
+            This project was generously crowd-funded by the Amplify
+            Art Grant through Arts United in Fort Wayne, IN.
+            <br><br>
+            Hope Arthur,<br>
+            Jake Baker,<br>
+            Carolyn Bean,<br>
+            Brett Bloom,<br>
+            Jeffrey Blossom,<br>
+            Elena Bohlander,<br>
+            Michael E. Butler,<br>
+            Steve Franks,<br>
+            Olan Griffiths,<br>
+            Cattherine and Scott Hill,<br> 
+            Darrin Kemp,<br>
+            Derek Kemp,<br>
+            Raquel A. Kline,<br>
+            Susan Mendenhall,<br>
+            Elizabeth Mikautadze,<br>
+            Debra Mitchell,<br>
+            Aggie Pryor,<br>
+            Dennis Roembke,<br>
+            Cornelia Schulz,<br>
+            Sarah Suraci,<br>
+            Sachi A. Yanari-Rizzo,<br>
+            Tim Zink
+        </div>
+    </div>
+
+    <button class="tutorialButton" onclick="showPopup()">?</button>
 
 </body>
 <style>
@@ -117,9 +172,9 @@
 
     .interactBar {
         position: fixed;
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(160px, 1fr));
         box-sizing: border-box;
-        justify-content: space-around;
 
         bottom: 0;
         width: 100vw;
@@ -212,8 +267,16 @@
         text-align: center;
 
         font-family: openDyslexic;
+
+        word-wrap: break-word;
+        overflow: scroll;
+        
     }
-    .popupWindow:hover{
+    .popupWindow.open{
+        display: flex;
+    }
+
+    #loadingPopup:hover{
         cursor: progress;
     }
 
@@ -221,7 +284,9 @@
         width: 80%;
         margin: 10px;
         padding: 5px;
+        white-space: normal;
     }
+
 
     .tutorialButton{
         position: absolute;
@@ -234,15 +299,48 @@
 
         font-family: openDyslexic;
         font-size: xx-large;
+
+        color: black;
     }
     .tutorialButton:hover{
         cursor: pointer;
     }
-    
 
+    #tutorialPopup{
+        display: none;
+    }
+    #tutorialPopup.Open{
+        display: flex;
+    }
+
+    #blocker{
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        content: ' ';
+        background: rgba(0,0,0,.6);
+
+        display: none;
+    }
+    
     body{
         margin: 0%;
     }
 
 </style>
+<script>
+    const popup = document.getElementById('tutorialPopup');
+    const blocker = document.getElementById('blocker');
+    function showPopup() {
+      popup.style.display = "flex";
+      blocker.style.display = "block";
+    }
+    function hidePopup() {
+        popup.style.display = "none";
+        blocker.style.display = "none";
+    }
+    </script>
+    
 </html>
