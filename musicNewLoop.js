@@ -123,6 +123,22 @@ async function MovePlayhead(playhead)
         notesPlayed[i].notePositions.length = 0;
     }
   }
+
+  /* Once we have a way of tracking all of the change data we can update weather data and update the music
+  if(tripCount > 8)
+    UpdateData();
+  */
+}
+
+async function UpdateData()
+{
+  await GetWeatherData();
+
+  for(i = 0; i < voices.length; i++)
+  {
+
+  }
+
 }
 
 async function CheckForNotes()

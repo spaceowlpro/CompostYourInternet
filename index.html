@@ -39,7 +39,6 @@
             <option selected disabled>Music</option>
             <option value="key">Key</option>
             <option value="playSpeed">Play Speed</option>
-            <option value="reverbLevel">Reverb</option>
             <optgroup label="Voice 1">
                 <option value="noteAmount">Note Positions</option>
                 <option value="shape">Note Shape</option>
@@ -72,7 +71,9 @@
                 Quick Start
             </em></u>
             <br>
-            To get some music going, select any data from the "Data" field, select "Note Positions" for any voice in the "Music" field, and hit the "Connect" button!
+            To get some music going, select any data from the "Data" field, select "Note Positions" 
+            for any voice in the "Music" field, and hit the "Connect" button. From there you can start
+            experimenting and listening to how different data connections affect the music.
             <br><br>
             <em><u>
                 What is this?
@@ -86,7 +87,8 @@
             choices depending on what weather data you choose
             to connect to the music. By May of 2024 it will also
             allow you to control the music with data measured
-            live from the compost itself.
+            live from the compost itself. The website will also 
+            eventually be hosted on a solar powered server.
             <br><br>
             <em><u>
                 Funding
@@ -121,7 +123,10 @@
     </div>
 
     <button class="tutorialButton" onclick="showPopup()">?</button>
-
+    <a href="https://forms.gle/uayCLqgECcaxmxE66" target="_blank">
+        <button class="feedbackButton">@</button>
+    </a>
+      
 </body>
 <style>
     @font-face {
@@ -260,8 +265,8 @@
         justify-content: center;
         align-items: center;
 
-        width: 50vw;
-        height: 50vh;
+        width: 70vw;
+        height: 700vh;
 
         background-color: #e5fccd;
         text-align: center;
@@ -292,7 +297,7 @@
         position: absolute;
         top: 0;
         right: 0;
-        transform: translate(-20px, 5px);
+        transform: translate(-60px, 5px);
 
         background-color: transparent;
         border-style: hidden;
@@ -303,6 +308,24 @@
         color: black;
     }
     .tutorialButton:hover{
+        cursor: pointer;
+    }
+
+    .feedbackButton{
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(-20px, 2px);
+
+        background-color: transparent;
+        border-style: hidden;
+
+        font-family: openDyslexic;
+        font-size: xx-large;
+
+        color: black;
+    }
+    .feedbackButton:hover{
         cursor: pointer;
     }
 
