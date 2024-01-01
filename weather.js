@@ -71,10 +71,7 @@ function parseWeatherData(weatherData)
     let weatherDataOptions = document.getElementsByTagName("option");
     let optionArray = Array.from(weatherDataOptions);
     
-    console.log(optionArray);
-
     optionArray.forEach(item =>{
-      console.log(item.innerText);
       if(weatherData['days'][0][item.value] != null)
       {
         var data = weatherData['days'][0][item.value];

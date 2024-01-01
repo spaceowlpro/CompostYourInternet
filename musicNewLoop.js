@@ -7,6 +7,8 @@ let accumulatedFrameTime = 0;
 
 var loading = true;
 
+const maxNotesInVoice = 25;
+
 //music stuff
 const notes = "ABCDEFG";
 const octaves = "345";
@@ -29,17 +31,13 @@ let currentKey = ['A','B','C','D','E','F','G'];
 var reverbLevel = .1;
 let voiceShapes = ["sine", "sine", "sine", "sine"];
 
-const voice0 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sine', env:{attack: .5, hold:.1, release:.8}});
+const voice0 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
 
-const voice1 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+const voice1 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
 
-const voice2 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+const voice2 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
 
-const voice3 = new Wad({pitch: RandomNote(), volume: .3,
-  source : 'sine', env:{attack: .01, hold:.1, release:.8}});
+const voice3 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
 
 const master = new Wad.Poly({
   reverb  : {
@@ -187,7 +185,6 @@ async function PlayRandomNote(voiceToPlay)
 {
   var randomNote = await RandomNote();
   voiceToPlay.play({pitch: randomNote});
-  voiceToPlay.stop();
 }
 
 //music stuff
@@ -247,7 +244,8 @@ function voiceIDFromStringValue(value)
 function NoteAmount(voiceID, data)
 {
   voiceID = voiceID-1;
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
+  //var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
+  var rangedData = CalculateNoteAmounts(data);
 
   voices[voiceID] = {value: rangedData};
   voices[voiceID].notePositions = [];
@@ -276,10 +274,15 @@ function NoteAmount(voiceID, data)
     var layout = window.document.getElementsByClassName("layout");
     layout[0].appendChild(div);
     image.style.transform = "rotate("+rangedData * i+"deg)";
-    voices[voiceID].notePositions.push(rangedData * i);
+
+    if(rangedData * i == 360)
+      voices[voiceID].notePositions.push(0);
+    else
+      voices[voiceID].notePositions.push(rangedData * i);
+
     i++;
   }
-  while((rangedData * i) < 360);
+  while((rangedData * i) <= 360);
 
   voices[voiceID].amount = i;
   console.log(voices[voiceID].notePositions);
@@ -287,21 +290,57 @@ function NoteAmount(voiceID, data)
   switch(voiceID)
   {
     case 0:
-      master.add(voice0)
+      master.add(voice0);
+      voice0.defaultEnv.hold = CalculateNoteLength(rangedData);
+      voice0.defaultEnv.attack = CalculateNoteAttack(rangedData);
+      console.log(voice0);
       break; 
     case 1:
-      master.add(voice1)
+      master.add(voice1);
+      voice1.defaultEnv.hold = CalculateNoteLength(rangedData);
+      voice1.defaultEnv.attack = CalculateNoteAttack(rangedData);
       break; 
     case 2:
-      master.add(voice2)
+      master.add(voice2);
+      voice2.defaultEnv.hold = CalculateNoteLength(rangedData);
+      voice2.defaultEnv.attack = CalculateNoteAttack(rangedData);
       break; 
     case 3:
-      master.add(voice3)
+      master.add(voice3);
+      voice3.defaultEnv.hold = CalculateNoteLength(rangedData);
+      voice3.defaultEnv.attack = CalculateNoteAttack(rangedData);
       break; 
             
   }
 
   console.log(master);
+}
+
+function CalculateNoteAmounts(data)
+{
+  //get rid of Math.ceil if you want things to be less symmetrical
+  return 360 / Math.ceil(rangeData(data.value, data.min, data.max, 1, maxNotesInVoice));
+}
+
+function CalculateNoteLength(noteAmount)
+{
+    
+  let noteLength = rangeData(noteAmount, 1, 360, .1, 3);
+
+  //for some reason noteLenght is a string if I don't do this...
+  noteLength = noteLength;
+
+  console.log("New note length = " + noteLength);
+  return noteLength;
+}
+
+function CalculateNoteAttack(noteAmount)
+{
+  let noteAttack = rangeData(noteAmount, 1, 360, .01, 1);
+  noteAttack = noteAttack;
+  console.log("New note attack = " + noteAttack);
+
+  return noteAttack;
 }
 
 function ReverbLevel(data)
