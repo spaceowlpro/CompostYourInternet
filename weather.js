@@ -34,14 +34,24 @@ var weatherData;
 
 var weatherValues = {};
 
+let weatherDataTypes = {
+  moonphase: '%',
+  temp: '°F',
+  humidity: '%',
+  precipprob: '%',
+  windspeed: 'mph',
+  cloudcover: '%',
+  solarradiation: 'W/m2'
+}
+
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
     weatherValues["moonphase"] = {value: weatherData['days'][0].moonphase, min: 0, max: 1};
     console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
 
-    weatherValues["temp"] = {value: weatherData['days'][0].temp, min: -27, max: 100};
-    console.log(`Temperature is ${weatherValues["temp"].value}.`);
+    weatherValues["temp"] = {value: weatherData['days'][0].temp * 9 / 5 + 32, min: -27, max: 100};
+    console.log(`Temperature is ${weatherValues["temp"].value * 9 / 5 + 32 }.`);
 
     weatherValues["humidity"] = {value: weatherData['days'][0].humidity, min: 0, max: 100};
     console.log(`Humidity is ${weatherValues["humidity"].value}.`);
@@ -57,6 +67,24 @@ function parseWeatherData(weatherData)
     
     weatherValues["solarradiation"] = {value: weatherData['days'][0].solarradiation, min: 0, max: 90};
     console.log(`Solar Radiation is ${weatherValues["solarradiation"].value}.`);
+
+    let weatherDataOptions = document.getElementsByTagName("option");
+    let optionArray = Array.from(weatherDataOptions);
+    
+    console.log(optionArray);
+
+    optionArray.forEach(item =>{
+      console.log(item.innerText);
+      if(weatherData['days'][0][item.value] != null)
+      {
+        var data = weatherData['days'][0][item.value];
+        if(item.value == 'temp')
+          data = data * 9 / 5 + 32;
+        if(item.value == 'moonphase')
+          data = 100 * data;
+        item.innerText += ': ' + data + weatherDataTypes[item.value];
+      }
+    });
 }
 
 function rangeData(dataValue, min, max, newMin, newMax)
