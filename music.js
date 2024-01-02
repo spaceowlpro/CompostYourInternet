@@ -38,6 +38,7 @@ const voice1 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1,
 const voice2 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
 
 const voice3 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
+console.log(voice0);
 
 const master = new Wad.Poly({
   reverb  : {
@@ -56,6 +57,7 @@ const master = new Wad.Poly({
 var tripCount = 0;
 
 var voices = {};
+var globalAffects = {};
 var notesPlayed = {};
 
 var playSpeed = 1;
@@ -217,23 +219,24 @@ function affectMusic()
   console.log(inputValue + ' selected from: ' + dataCategory + ' and connected to ' + musicValue);
 
   if(musicValue == 'noteAmount')
-    NoteAmount(voiceIDFromStringValue(musicCategory), weatherValues[inputValue]);
+    NoteAmount(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
 
   if(musicValue == 'reverbLevel')
-    ReverbLevel(weatherValues[inputValue]);
+    ReverbLevel(weatherValues[inputValue], inputValue);
 
   if(musicValue == 'playSpeed')
-    PlaySpeed(weatherValues[inputValue]);
+    PlaySpeed(weatherValues[inputValue], inputValue);
 
   if(musicValue == 'shape')
-    NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], dataCategory);
+    NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
 
   if(musicValue == 'key')
   {
-    console.log("setting key");
     SetKey(weatherValues[inputValue], inputValue);
   }
 
+  console.log(globalAffects);
+  FillRecipeLog();
 }
 
 function voiceIDFromStringValue(value)
@@ -241,7 +244,7 @@ function voiceIDFromStringValue(value)
   return parseInt(value.slice(-1));
 }
 
-function NoteAmount(voiceID, data)
+function NoteAmount(voiceID, data, dataCategory)
 {
   voiceID = voiceID-1;
   //var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
@@ -251,8 +254,6 @@ function NoteAmount(voiceID, data)
   voices[voiceID].notePositions = [];
 
   notesPlayed[voiceID] = {notePositions : []};
-
-  console.log("Voice" + voiceID + " will play every " + voices[voiceID].value);
 
   const oldNodes = document.getElementsByClassName('node' + voiceID);
   const nodeArray = Array.from(oldNodes);
@@ -273,19 +274,27 @@ function NoteAmount(voiceID, data)
     div.appendChild(image);
     var layout = window.document.getElementsByClassName("layout");
     layout[0].appendChild(div);
-    image.style.transform = "rotate("+rangedData * i+"deg)";
+    var newPosition = rangedData * i;
 
-    if(rangedData * i == 360)
-      voices[voiceID].notePositions.push(0);
-    else
-      voices[voiceID].notePositions.push(rangedData * i);
+    image.style.transform = "rotate("+newPosition+"deg)";
 
+    if(newPosition == 360)
+      newPosition = 0;
+
+    //mute notes that have already been passed by current playhead position
+    if(degrees > newPosition)
+      notesPlayed[voiceID].notePositions.push(newPosition);
+  
+    voices[voiceID].notePositions.push(newPosition);
+  
     i++;
   }
-  while((rangedData * i) <= 360);
+  while((newPosition) <= 360);
 
+  //keep track of voice note amounts
   voices[voiceID].amount = i;
-  console.log(voices[voiceID].notePositions);
+  //keep track of data affecting the note amounts
+  voices[voiceID].amountData = dataCategory;
 
   switch(voiceID)
   {
@@ -293,7 +302,6 @@ function NoteAmount(voiceID, data)
       master.add(voice0);
       voice0.defaultEnv.hold = CalculateNoteLength(rangedData);
       voice0.defaultEnv.attack = CalculateNoteAttack(rangedData);
-      console.log(voice0);
       break; 
     case 1:
       master.add(voice1);
@@ -312,8 +320,6 @@ function NoteAmount(voiceID, data)
       break; 
             
   }
-
-  console.log(master);
 }
 
 function CalculateNoteAmounts(data)
@@ -330,7 +336,6 @@ function CalculateNoteLength(noteAmount)
   //for some reason noteLenght is a string if I don't do this...
   noteLength = noteLength;
 
-  console.log("New note length = " + noteLength);
   return noteLength;
 }
 
@@ -338,91 +343,98 @@ function CalculateNoteAttack(noteAmount)
 {
   let noteAttack = rangeData(noteAmount, 1, 360, .01, 1);
   noteAttack = noteAttack;
-  console.log("New note attack = " + noteAttack);
 
   return noteAttack;
 }
 
-function ReverbLevel(data)
+function ReverbLevel(data, dataCategory)
 {
   var rangedData = rangeData(data.value, data.min, data.max, 0, 1);
 
   //round to 2 decimals
   rangedData = Math.round((rangedData + Number.EPSILON) * 100) / 100;
 
-  console.log('setting reverb to ' + rangedData);
   reverbLevel = rangedData;
 
   master.reverb.wet = reverbLevel;
-  console.log(master);
+
+  //keep track of level and data categories
+  globalAffects.reverb = reverbLevel;
+  globalAffects.reverbData = dataCategory;
 }
 
-function PlaySpeed(data)
+function PlaySpeed(data, dataCategory)
 {
   playSpeed = rangeData(data.value, data.min, data.max, 0, 1.5);
+  globalAffects.playSpeed = playSpeed;
+  globalAffects.playspeedData = dataCategory;
 }
 
-function NoteShape(voiceID, data, dataType)
+function NoteShape(voiceID, data, dataCategory)
 {
+  voiceID = voiceID - 1;
   //return range between 0-4 and clamp it to the next int as a category
   var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
 
   //set as sine as failsafe
   var shape = 'sine';
+  var newVolume = .3;
 
-  //potentially use dataType to change the direction of the shape selection
-  //maybe you want sound to be more mellow if the moon is full etc
-
-  console.log('ranged data = ' + rangedData);
   switch(rangedData)
   {
     case 1:
-      voiceShapes[voiceID - 1] = 'sine';
+      voiceShapes[voiceID] = 'sine';
       break;
     case 2:
-      voiceShapes[voiceID - 1] = 'triangle';
+      voiceShapes[voiceID] = 'triangle';
       break;
     case 3:
-      voiceShapes[voiceID - 1] = 'square';
+      voiceShapes[voiceID] = 'square';
+      newVolume = .15;
       break;
     case 4:
-      voiceShapes[voiceID - 1] = 'sawtooth';
+      voiceShapes[voiceID] = 'sawtooth';
+      newVolume = .15;
       break;
   }
 
-  shape = voiceShapes[voiceID - 1];
+  shape = voiceShapes[voiceID];
 
   switch(voiceID)
   {
-    case 1:
+    case 0:
       voice0.source = shape;
+      voice0.defaultVolume = newVolume;
+      console.log(voice0);
+      break;
+    case 1:
+      voice1.source = shape;
+      voice1.defaultVolume = newVolume;
       break;
     case 2:
-      voice1.source = shape;
+      voice2.source = shape;
+      voice2.defaultVolume = newVolume;
       break;
     case 3:
-      voice2.source = shape;
-      break;
-    case 4:
       voice3.source = shape;
+      voice3.defaultVolume = newVolume;
       break;
   }
   ChangeShapeImages(voiceID);
-
+  //keep track of shape data
+  voices[voiceID].shapeData = dataCategory;
 }
 
 async function ChangeShapeImages(voiceID)
 {
-  let nodes = document.getElementsByClassName("node" + (voiceID-1));
-  console.log(nodes);
+  let nodes = document.getElementsByClassName("node" + (voiceID));
   let nodeArray = Array.from(nodes);
-  console.log(nodeArray);
-  nodeArray.forEach(node => node.src = "images/"+ voiceShapes[voiceID - 1] + (voiceID - 1) + ".png");
+
+  nodeArray.forEach(node => node.src = "images/"+ voiceShapes[voiceID] + (voiceID) + ".png");
 }
 
 async function SetKey(data, dataCategory)
 {
-  console.log("setting key for " + dataCategory);
   switch(dataCategory)
   {
     case 'moonphase':
@@ -444,134 +456,37 @@ async function SetKey(data, dataCategory)
       SunKey(data);
       break;
   }
+
+  globalAffects.keyData = dataCategory;
 }
 
-async function MoonphaseKey(data)
+async function FillRecipeLog()
 {
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
+  var recipeLog = document.getElementById('recipeWindow');
+  recipeLog.innerText = '';
 
-  switch(rangedData)
+  if(globalAffects.keyData != null)
   {
-    case 0:
-      SetScale(Hirajoshi);
-      break;
-    case 1:
-      SetScale(Insen);
-      break;
-    case 2:
-      SetScale(Iwato);
-      break;
-    case 3:
-      SetScale(Kumoi);
-      break;  
+    recipeLog.innerText += "Music's key is being chosen by " + globalAffects.keyData + '\n';
+  }
+
+  if(globalAffects.playspeedData != null)
+  {
+    recipeLog.innerText += "Playspeed powered by " + globalAffects.playspeedData + '\n';
+  }
+
+
+  for(let i = 0; i < 4; i++)
+  {
+    if(voices[i] != null)
+    {
+      if(voices[i].amountData != null) 
+        recipeLog.innerText += "Voice" + (i + 1) + "'s notes placed by " + voices[i].amountData + '\n';
+    }
+    if(voices[i] != null)
+    {
+      if(voices[i].shapeData != null)
+        recipeLog.innerText += "Voice" + (i + 1) + "'s note shape determined by " + voices[i].shapeData + '\n';
+    }
   }
 }
-
-async function PrecipitationKey(data)
-{
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
-
-  switch(rangedData)
-  {
-    case 0:
-      SetScale(MajorPentatonic);
-      break;
-    case 1:
-      SetScale(MinorPentatonic);
-      break;
-    case 2:
-      SetScale(HarmonicMajor);
-      break;
-    case 3:
-      SetScale(HarmonicMinor);
-      break;  
-  }
-}
-
-async function SunKey(data)
-{
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 3));
-
-  switch(rangedData)
-  {
-    case 0:
-      MoonphaseKey();
-      break;
-    case 1:
-      SetScale(MinorPentatonic);
-      break;
-    case 2:
-      SetScale(MajorPentatonic);
-      break;
-  }
-}
-
-async function WindKey(data)
-{
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 3));
-
-  switch(rangedData)
-  {
-    case 0:
-      SetScale(WholeTone);
-      break;
-    case 1:
-      SetScale(HalfWholeDim);
-      break;
-    case 2:
-      SetScale(WholeHalfDim);
-      break;
-  }
-}
-
-async function TempKey(data)
-{
-  var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
-
-
-  switch(rangedData)
-  {
-    case 0:
-      SetScale(MinorBlues);
-      break;
-    case 1:
-      SetScale(PelogBem);
-      break;
-    case 2:
-      SetScale(Ionian);
-      break;
-    case 3:
-      SetScale(WholeTone);
-      break;  
-  }
-}
-
-async function SetScale(scale)
-{
-  console.log("setting scale to " + scale);
-  let notes = [];
-
-  scale.forEach((degree) => notes.push(noteArray[degree]));
-
-  currentKey.length = 0;
-  currentKey = notes;
-}
-
-let Ionian = [0, 2, 4, 5, 7, 9, 11];
-let HarmonicMajor = [0, 2, 4, 5, 7, 8, 11];
-let HarmonicMinor = [0, 2, 3, 5, 7, 8, 11];
-
-let WholeTone = [0, 2, 4, 6, 8, 10];
-let MajorPentatonic = [0, 2, 4, 7, 9];
-let MinorPentatonic = [0, 3, 5, 7, 10];
-let MinorBlues = [0, 3, 5, 6, 7, 10];
-
-let HalfWholeDim = [0, 1, 3, 4, 6, 7, 9, 10];
-let WholeHalfDim = [0, 2, 3, 5, 6, 8, 9, 11];
-
-let Hirajoshi = [0, 5, 7, 8, 12];
-let Insen = [0, 1, 6, 8, 11];
-let Iwato = [0, 1, 6, 7, 11];
-let Kumoi = [0, 2, 3, 7, 9];
-
-let PelogBem = [0, 1, 6, 7, 8];
