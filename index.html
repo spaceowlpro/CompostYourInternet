@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/web-audio-daw"></script>
-    <script src="musicNewLoop.js"></script>
+    <script src="key.js"></script>
+    <script src="music.js"></script>
     <script src="weather.js"></script>
     <title>Compost Your Internet</title>
 </head>
@@ -56,6 +57,10 @@
                 <option value="shape">Note Shape</option>
             </optgroup>
         </select>
+    </div>
+    <button class="recipeBar">Recipe</button>
+    <div class="recipeWindow" id="recipeWindow">
+        The data connections you make with the music will be recorded here.
     </div>
 
     <div class="popupWindow" id="loadingPopup">
@@ -292,18 +297,52 @@
         white-space: normal;
     }
 
+    .recipeBar{
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(-135px, 20px);
+        display: none;
+
+        background-color: #e5fccd;
+        font-family: openDyslexic;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-style: none;
+        
+    }
+    .recipeBar:hover{
+        cursor: pointer;
+    }
+
+    .recipeWindow{
+        position: absolute;
+        display: none;
+        width: 95vw;
+        padding: 20px;
+        transform: translate(0px, -22px);
+        background-color: #e5fccd;
+        font-family: openDyslexic;
+        flex-wrap: wrap;
+        opacity: .5;
+    }
+
 
     .tutorialButton{
         position: absolute;
         top: 0;
         right: 0;
-        transform: translate(-60px, 5px);
+        transform: translate(-80px, 20px);
 
-        background-color: transparent;
         border-style: hidden;
+        background-color: transparent;
 
         font-family: openDyslexic;
-        font-size: xx-large;
+        background-color: #e5fccd;
+
+        padding-left: 20px;
+        padding-right: 20px;
+        border-style: none;
 
         color: black;
     }
@@ -315,13 +354,16 @@
         position: absolute;
         top: 0;
         right: 0;
-        transform: translate(-20px, 2px);
+        transform: translate(-20px, 20px);
 
         background-color: transparent;
         border-style: hidden;
 
+        background-color: #e5fccd;
         font-family: openDyslexic;
-        font-size: xx-large;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-style: none;
 
         color: black;
     }
