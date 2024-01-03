@@ -8,12 +8,17 @@
     <script src="key.js"></script>
     <script src="music.js"></script>
     <script src="weather.js"></script>
+    <script src="contact.js"></script>
     <title>Compost Your Internet</title>
 </head>
 <body>
     <div class="layout">
-        <div class="topbar">
+        <div class="topBar">
             Compost Your Internet
+            <button class="tutorialButton" onclick="showPopup()">?</button>
+            <div class="feedbackHolder">
+                <input type="image" class="feedbackButton" onclick="OpenContactForm()" src="images/contactIcon.png"> 
+            </div>
         </div>
         <div class="MusicBox">
             <div class="container">
@@ -125,13 +130,7 @@
             Sachi A. Yanari-Rizzo,<br>
             Tim Zink
         </div>
-    </div>
-
-    <button class="tutorialButton" onclick="showPopup()">?</button>
-    <a href="https://forms.gle/uayCLqgECcaxmxE66" target="_blank">
-        <button class="feedbackButton">@</button>
-    </a>
-      
+    </div>      
 </body>
 <style>
     @font-face {
@@ -146,12 +145,6 @@
         -moz-transform: translateX(-50%) translateY(-50%);
         -webkit-transform: translateX(-50%) translateY(-50%);
         transform: translateX(-50%) translateY(-50%);
-    }
-
-    .topbar{
-        padding: 20px;
-        color: #e5fccd;
-        font-family: openDyslexic;
     }
 
     #img1{
@@ -178,6 +171,23 @@
 
     html{
         background-color: #608537;
+    }
+
+    .topBar {
+        position: fixed;
+        display: grid;
+        grid-template-columns: 3fr 1fr 1fr;
+        grid-template-rows: 1fr;
+        grid-gap: 10px;
+
+        box-sizing: border-box;
+        font-family: openDyslexic;
+
+        top: 0;
+        width: 100vw;
+        padding: 5px;
+
+        background-color: #e5fccd;
     }
 
     .interactBar {
@@ -329,46 +339,40 @@
 
 
     .tutorialButton{
-        position: absolute;
-        top: 0;
-        right: 0;
-        transform: translate(-80px, 20px);
-
         border-style: hidden;
-        background-color: transparent;
 
         font-family: openDyslexic;
-        background-color: #e5fccd;
+        background-color: #608537;
 
         padding-left: 20px;
         padding-right: 20px;
         border-style: none;
 
-        color: black;
+        color: #e5fccd;
+        border-radius: 25px;
     }
     .tutorialButton:hover{
         cursor: pointer;
     }
 
     .feedbackButton{
-        position: absolute;
-        top: 0;
-        right: 0;
-        transform: translate(-20px, 20px);
-
-        background-color: transparent;
         border-style: hidden;
-
-        background-color: #e5fccd;
+        background-color: #608537;
         font-family: openDyslexic;
-        padding-left: 20px;
-        padding-right: 20px;
-        border-style: none;
+        align-self: center;
 
-        color: black;
+        color: #e5fccd;
     }
     .feedbackButton:hover{
         cursor: pointer;
+    }
+
+    .feedbackHolder{
+        border-radius: 25px;
+        background-color: #608537;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #tutorialPopup{
