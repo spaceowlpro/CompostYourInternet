@@ -165,16 +165,16 @@ async function CheckForNoteInVoice(voice, i)
         switch(i)
         {
           case 0:
-            PlayRandomNote(voice0);
+            PlayRandomNote(voice0, 0);
             break;
           case 1:
-            PlayRandomNote(voice1);
+            PlayRandomNote(voice1, 1);
             break;
           case 2:
-            PlayRandomNote(voice2);
+            PlayRandomNote(voice2, 2);
             break;
           case 3:
-            PlayRandomNote(voice3);
+            PlayRandomNote(voice3, 3);
             break;  
         }    
         notesPlayed[i].notePositions.push(element);
@@ -183,15 +183,17 @@ async function CheckForNoteInVoice(voice, i)
   }
 }
 
-async function PlayRandomNote(voiceToPlay)
+async function PlayRandomNote(voiceToPlay, voiceID)
 {
-  var randomNote = await RandomNote();
+  let range = octaves[voiceID];
+  var randomNote = await RandomNote(range);
   voiceToPlay.play({pitch: randomNote});
 }
 
 //music stuff
-async function RandomNote()
+async function RandomNote(range)
 {
+  //use range to select octave instead
   var note;
   
   var randomNote = currentKey[Math.floor(Math.random() * currentKey.length)];
@@ -390,7 +392,7 @@ function NoteShape(voiceID, data, dataCategory)
       break;
     case 3:
       voiceShapes[voiceID] = 'square';
-      newVolume = .15;
+      newVolume = .1;
       break;
     case 4:
       voiceShapes[voiceID] = 'sawtooth';
@@ -452,8 +454,8 @@ async function SetKey(data, dataCategory)
     case 'windspeed':
       WindKey(data);
       break;
-    case 'solarradiation':
-      SunKey(data);
+    case 'cloudcover':
+      CloudKey(data);
       break;
   }
 
