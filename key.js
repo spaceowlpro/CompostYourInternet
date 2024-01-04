@@ -8,12 +8,15 @@ async function MoonphaseKey(data)
       SetScale(Hirajoshi);
       break;
     case 1:
-      SetScale(Insen);
+      SetScale(Hirajoshi);
       break;
     case 2:
-      SetScale(Iwato);
+      SetScale(Insen);
       break;
     case 3:
+      SetScale(Iwato);
+      break;
+    case 4:
       SetScale(Kumoi);
       break;  
   }
@@ -29,18 +32,21 @@ async function PrecipitationKey(data)
       SetScale(MajorPentatonic);
       break;
     case 1:
+        SetScale(MajorPentatonic);
+        break;  
+    case 2:
       SetScale(MinorPentatonic);
       break;
-    case 2:
+    case 3:
       SetScale(HarmonicMajor);
       break;
-    case 3:
+    case 4:
       SetScale(HarmonicMinor);
       break;  
   }
 }
 
-async function SunKey(data)
+async function CloudKey(data)
 {
   var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 3));
 
@@ -50,9 +56,12 @@ async function SunKey(data)
       MoonphaseKey();
       break;
     case 1:
-      SetScale(MinorPentatonic);
+      MoonphaseKey();
       break;
     case 2:
+      SetScale(MinorPentatonic);
+      break;
+    case 3:
       SetScale(MajorPentatonic);
       break;
   }
@@ -68,9 +77,12 @@ async function WindKey(data)
       SetScale(WholeTone);
       break;
     case 1:
-      SetScale(HalfWholeDim);
+      SetScale(WholeTone);
       break;
     case 2:
+      SetScale(HalfWholeDim);
+      break;
+    case 3:
       SetScale(WholeHalfDim);
       break;
   }
@@ -87,12 +99,15 @@ async function TempKey(data)
       SetScale(MinorBlues);
       break;
     case 1:
-      SetScale(PelogBem);
+      SetScale(MinorBlues);
       break;
     case 2:
-      SetScale(Ionian);
+      SetScale(PelogBem);
       break;
     case 3:
+      SetScale(Ionian);
+      break;
+    case 4:
       SetScale(WholeTone);
       break;  
   }
