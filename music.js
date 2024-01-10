@@ -1,15 +1,14 @@
-//gameloop stuff
+//logic loop
 const fps = 60;
 const frameDuration = 1000 / fps;
-
 let prevTime = performance.now();
 let accumulatedFrameTime = 0;
 
 var loading = true;
 
-const maxNotesInVoice = 25;
 
 //music stuff
+const maxNotesInVoice = 25;
 const notes = "ABCDEFG";
 const octaves = "345";
 let noteArray = [
@@ -27,18 +26,16 @@ let noteArray = [
 	'B'
 ];
 
-let currentKey = ['A','B','C','D','E','F','G'];
+//music affect variables
+var playSpeed = 1;
 var reverbLevel = .1;
+let currentKey = ['A','B','C','D','E','F','G'];
 let voiceShapes = ["sine", "sine", "sine", "sine"];
 
 const voice0 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
-
 const voice1 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
-
 const voice2 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
-
 const voice3 = new Wad({source : 'sine', volume: .3, env:{attack: .01, hold: .1, release:.8}});
-console.log(voice0);
 
 const master = new Wad.Poly({
   reverb  : {
@@ -46,28 +43,40 @@ const master = new Wad.Poly({
     wet : .3,
   },
   compressor : {
-    attack    : .003, // The amount of time, in seconds, to reduce the gain by 10dB. This parameter ranges from 0 to 1.
-    knee      : 30,  // A decibel value representing the range above the threshold where the curve smoothly transitions to the "ratio" portion. This parameter ranges from 0 to 40.
-    ratio     : 12,   // The amount of dB change in input for a 1 dB change in output. This parameter ranges from 1 to 20.
-    release   : .25,  // The amount of time (in seconds) to increase the gain by 10dB. This parameter ranges from 0 to 1.
-    threshold : -24,  // The decibel value above which the compression will start taking effect. This parameter ranges from -100 to 0.
+    attack    : .003, 
+    knee      : 30,  
+    ratio     : 12,   
+    release   : .25,  
+    threshold : -24,  
   }
 });
 
+//number of times the playhead has traveled around the circle
 var tripCount = 0;
 
-var voices = {};
-var globalAffects = {};
-var notesPlayed = {};
-
-var playSpeed = 1;
-
-
-//render stuff
+//degree of playhead out of 360
 var degrees = 0;
 
+//objects to keep track of data affects to music
+var voices = {
+  0 : {voice : voice0},
+  1 : {voice : voice1},
+  2 : {voice : voice2},
+  3 : {voice : voice3}
+};
+var globalAffects = {};
 
-//main time loop
+//object to keep track of notes played from all of the voices.
+var notesPlayed = {};
+
+//get playLine from html once the page is loaded
+var playLine;
+document.addEventListener("DOMContentLoaded", (event) => {
+  playLine = document.getElementById("playLine");
+});
+
+
+//main time loop, still needs to be split up between render and update?
 async function gameloop(time) {
   //play around with moving render in and outside the while loop
   const elapsedTimeBetweenFrames = time - prevTime;
@@ -82,34 +91,34 @@ async function gameloop(time) {
 }
 requestAnimationFrame(gameloop);
 
-//logic loop
+//logic loop still not actually being utilized. Not sure if I need to
 function update(frameDuration)
 {
+
 }
 
 //render loop
 async function render()
 {
-  const elem = document.getElementById("img1");
+  if(playLine == null) {return;}
 
-  await MovePlayhead(elem);
+  await MovePlayline(playLine);
 
   CheckForNotes();
-
 }
 
-async function MovePlayhead(playhead)
+async function MovePlayline(playline)
 {
   if(navigator.userAgent.match("Chrome")){
-    playhead.style.WebkitTransform = "rotate("+degrees+"deg)";
+    playline.style.WebkitTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("Firefox")){
-    playhead.style.MozTransform = "rotate("+degrees+"deg)";
+    playline.style.MozTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("MSIE")){
-    playhead.style.msTransform = "rotate("+degrees+"deg)";
+    playline.style.msTransform = "rotate("+degrees+"deg)";
   } else if(navigator.userAgent.match("Opera")){
-    playhead.style.OTransform = "rotate("+degrees+"deg)";
+    playline.style.OTransform = "rotate("+degrees+"deg)";
   } else {
-    playhead.style.transform = "rotate("+degrees+"deg)";
+    playline.style.transform = "rotate("+degrees+"deg)";
   }
 
   degrees += 1 * playSpeed;
@@ -145,49 +154,39 @@ async function CheckForNotes()
 {
   for(i = 0; i < 4; i++)
   {
-    if(voices[i] != null)
-    {
-      CheckForNoteInVoice(voices[i], i);
-    }
+    CheckForNoteInVoice(voices[i], i);
   }  
 }
 
-async function CheckForNoteInVoice(voice, i)
+async function CheckForNoteInVoice(voice, voiceID)
 {
+  //Return if no notes have been added to this voice
+  if(voice.notePositions == null){return;}
+
   for (let v = 0; v < voice.notePositions.length; v++) 
   {      
-    var element = voice.notePositions[v];
-    if(!notesPlayed[i].notePositions.includes(element))
+    let notePosition = voice.notePositions[v];
+
+    //if the note hasn't already been played
+    if(!notesPlayed[voiceID].notePositions.includes(notePosition))
     {
-      if(degrees >= element)
+      //if the playline has passed the note
+      if(degrees >= notePosition)
       {
-        //play note!
-        switch(i)
-        {
-          case 0:
-            PlayRandomNote(voice0, 0);
-            break;
-          case 1:
-            PlayRandomNote(voice1, 1);
-            break;
-          case 2:
-            PlayRandomNote(voice2, 2);
-            break;
-          case 3:
-            PlayRandomNote(voice3, 3);
-            break;  
-        }    
-        notesPlayed[i].notePositions.push(element);
+        //play it!
+        PlayRandomNote(voiceID);
+        //make sure it isn't played again until next cycle
+        notesPlayed[voiceID].notePositions.push(notePosition);
       }
     }
   }
 }
 
-async function PlayRandomNote(voiceToPlay, voiceID)
+async function PlayRandomNote(voiceID)
 {
   let range = octaves[voiceID];
   var randomNote = await RandomNote(range);
-  voiceToPlay.play({pitch: randomNote});
+  voices[voiceID].voice.play({pitch: randomNote});
 }
 
 //music stuff
@@ -205,6 +204,7 @@ async function RandomNote(range)
 
 function affectMusic()
 {
+  //if weather data is still loading, don't do anything with button press
   if(loading){return;}
 
   const dataField = document.getElementById("data");
@@ -216,7 +216,6 @@ function affectMusic()
 
   const musicCategory = document.querySelector('select[name="musicElement"] option:checked').parentElement.label;
   const musicValue = musicField.value;
-
 
   console.log(inputValue + ' selected from: ' + dataCategory + ' and connected to ' + musicValue);
 
@@ -233,9 +232,7 @@ function affectMusic()
     NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
 
   if(musicValue == 'key')
-  {
     SetKey(weatherValues[inputValue], inputValue);
-  }
 
   console.log(globalAffects);
   FillRecipeLog();
@@ -243,27 +240,31 @@ function affectMusic()
 
 function voiceIDFromStringValue(value)
 {
-  return parseInt(value.slice(-1));
+  //parse last character and convert to int, then subtract one to start from 0
+  return parseInt(value.slice(-1)) - 1;
 }
 
 function NoteAmount(voiceID, data, dataCategory)
 {
-  voiceID = voiceID-1;
-  //var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 360));
+  //get note amount data
   var rangedData = CalculateNoteAmounts(data);
 
-  voices[voiceID] = {value: rangedData};
+  //apply data to voice
+  voices[voiceID].value = rangedData;
   voices[voiceID].notePositions = [];
 
+  //setup notes played tracking for voice
   notesPlayed[voiceID] = {notePositions : []};
 
+  //find art nodes for previous notes in voice, if any, and remove them
   const oldNodes = document.getElementsByClassName('node' + voiceID);
   const nodeArray = Array.from(oldNodes);
-
   if(nodeArray.length > 0)
     nodeArray.forEach(node => node.remove());
 
+  //count how many notes we're adding
   var i = 1;
+  //Start adding new art nodes to represent notes on screen
   do
   {
     //create div and add it
@@ -272,14 +273,18 @@ function NoteAmount(voiceID, data, dataCategory)
     var image = document.createElement("img");
     image.setAttribute("class","node" + voiceID);
     image.setAttribute("src","images/"+ voiceShapes[voiceID] + voiceID + ".png");
-
     div.appendChild(image);
+
     var layout = window.document.getElementsByClassName("layout");
     layout[0].appendChild(div);
+
+    //calculate position of new art node
     var newPosition = rangedData * i;
 
+    //apply the rotation to represent the note position
     image.style.transform = "rotate("+newPosition+"deg)";
 
+    //set note to 0 instead of 360 since the playline will only go to 359 before starting over
     if(newPosition == 360)
       newPosition = 0;
 
@@ -287,8 +292,10 @@ function NoteAmount(voiceID, data, dataCategory)
     if(degrees > newPosition)
       notesPlayed[voiceID].notePositions.push(newPosition);
   
+    //add noteposition to voice
     voices[voiceID].notePositions.push(newPosition);
   
+    //
     i++;
   }
   while((newPosition) <= 360);
@@ -298,30 +305,11 @@ function NoteAmount(voiceID, data, dataCategory)
   //keep track of data affecting the note amounts
   voices[voiceID].amountData = dataCategory;
 
-  switch(voiceID)
-  {
-    case 0:
-      master.add(voice0);
-      voice0.defaultEnv.hold = CalculateNoteLength(rangedData);
-      voice0.defaultEnv.attack = CalculateNoteAttack(rangedData);
-      break; 
-    case 1:
-      master.add(voice1);
-      voice1.defaultEnv.hold = CalculateNoteLength(rangedData);
-      voice1.defaultEnv.attack = CalculateNoteAttack(rangedData);
-      break; 
-    case 2:
-      master.add(voice2);
-      voice2.defaultEnv.hold = CalculateNoteLength(rangedData);
-      voice2.defaultEnv.attack = CalculateNoteAttack(rangedData);
-      break; 
-    case 3:
-      master.add(voice3);
-      voice3.defaultEnv.hold = CalculateNoteLength(rangedData);
-      voice3.defaultEnv.attack = CalculateNoteAttack(rangedData);
-      break; 
-            
-  }
+  //TODO figure out better place to do this so that it only happens once
+  master.add(voices[voiceID].voice);
+
+  voices[voiceID].voice.defaultEnv.hold = CalculateNoteLength(rangedData);
+  voices[voiceID].voice.defaultEnv.attack = CalculateNoteAttack(rangedData);
 }
 
 function CalculateNoteAmounts(data)
@@ -374,7 +362,6 @@ function PlaySpeed(data, dataCategory)
 
 function NoteShape(voiceID, data, dataCategory)
 {
-  voiceID = voiceID - 1;
   //return range between 0-4 and clamp it to the next int as a category
   var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
 
@@ -402,26 +389,10 @@ function NoteShape(voiceID, data, dataCategory)
 
   shape = voiceShapes[voiceID];
 
-  switch(voiceID)
-  {
-    case 0:
-      voice0.source = shape;
-      voice0.defaultVolume = newVolume;
-      console.log(voice0);
-      break;
-    case 1:
-      voice1.source = shape;
-      voice1.defaultVolume = newVolume;
-      break;
-    case 2:
-      voice2.source = shape;
-      voice2.defaultVolume = newVolume;
-      break;
-    case 3:
-      voice3.source = shape;
-      voice3.defaultVolume = newVolume;
-      break;
-  }
+  //apply new shape and volume to voice
+  voices[voiceID].voice.source = shape;
+  voices[voiceID].voice.defaultVolume = newVolume;
+
   ChangeShapeImages(voiceID);
   //keep track of shape data
   voices[voiceID].shapeData = dataCategory;
