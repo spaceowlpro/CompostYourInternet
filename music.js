@@ -184,13 +184,12 @@ async function CheckForNoteInVoice(voice, voiceID)
 
 async function PlayRandomNote(voiceID)
 {
-  let range = octaves[voiceID];
-  var randomNote = await RandomNote(range);
+  var randomNote = await RandomNote();
   voices[voiceID].voice.play({pitch: randomNote});
 }
 
 //music stuff
-async function RandomNote(range)
+async function RandomNote()
 {
   //use range to select octave instead
   var note;
