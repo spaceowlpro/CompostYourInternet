@@ -136,7 +136,7 @@ let MinorBlues = [0, 3, 5, 6, 7, 10];
 let HalfWholeDim = [0, 1, 3, 4, 6, 7, 9, 10];
 let WholeHalfDim = [0, 2, 3, 5, 6, 8, 9, 11];
 
-let Hirajoshi = [0, 5, 7, 8, 12];
+let Hirajoshi = [0, 5, 7, 8];
 let Insen = [0, 1, 6, 8, 11];
 let Iwato = [0, 1, 6, 7, 11];
 let Kumoi = [0, 2, 3, 7, 9];
