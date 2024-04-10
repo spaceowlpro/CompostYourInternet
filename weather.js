@@ -35,13 +35,13 @@ var weatherData;
 var weatherValues = {};
 
 let weatherDataTypes = {
-  moonphase: '%',
-  temp: '°F',
-  humidity: '%',
-  precipprob: '%',
-  windspeed: 'mph',
-  cloudcover: '%',
-  solarradiation: 'W/m2'
+  moonphase: {sign:'%', longText: 'Moonphase'},
+  temp: {sign:'°F', longText:'Temperature'},
+  humidity: {sign: '%', longText: 'Humidity'},
+  precipprob: {sign: '%', longText: 'Chance of rain'},
+  windspeed: {sign: 'mph', longText: 'Windspeed'},
+  cloudcover: {sign: '%', longText: 'Cloud cover'},
+  solarradiation: {sign: 'W/m2', longText: 'Solar radiation'}
 }
 
 function parseWeatherData(weatherData)
@@ -77,7 +77,7 @@ function parseWeatherData(weatherData)
         var data = weatherValues[item.value].value;
         if(item.value == 'moonphase')
           data = 100 * data;
-        item.innerText += ': ' + data + weatherDataTypes[item.value];
+        item.innerText += ': ' + data + weatherDataTypes[item.value].sign;
       }
     });
 }

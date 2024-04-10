@@ -92,7 +92,6 @@ async function TempKey(data)
 {
   var rangedData = Math.ceil(rangeData(data.value, data.min, data.max, 0, 4));
 
-
   switch(rangedData)
   {
     case 0:
@@ -115,30 +114,31 @@ async function TempKey(data)
 
 async function SetScale(scale)
 {
-  console.log("setting scale to " + scale);
+  console.log("setting scale to " + scale.scale);
   let notes = [];
 
-  scale.forEach((degree) => notes.push(noteArray[degree]));
+  scale.scale.forEach((degree) => notes.push(noteArray[degree]));
 
   currentKey.length = 0;
   currentKey = notes;
+  InteractNotification('Setting key to a ' + scale.name + ' scale.');
 }
 
-let Ionian = [0, 2, 4, 5, 7, 9, 11];
-let HarmonicMajor = [0, 2, 4, 5, 7, 8, 11];
-let HarmonicMinor = [0, 2, 3, 5, 7, 8, 11];
+let Ionian = {scale: [0, 2, 4, 5, 7, 9, 11], name: 'Ionian'};
+let HarmonicMajor = {scale: [0, 2, 4, 5, 7, 8, 11], name: 'Harmonic Major'};
+let HarmonicMinor = {scale: [0, 2, 3, 5, 7, 8, 11], name: 'Harmonic Minor'};
 
-let WholeTone = [0, 2, 4, 6, 8, 10];
-let MajorPentatonic = [0, 2, 4, 7, 9];
-let MinorPentatonic = [0, 3, 5, 7, 10];
-let MinorBlues = [0, 3, 5, 6, 7, 10];
+let WholeTone = {scale: [0, 2, 4, 6, 8, 10], name: 'Whole-tone'};
+let MajorPentatonic = {scale: [0, 2, 4, 7, 9], name: 'Major Pentatonic'};
+let MinorPentatonic = {scale: [0, 3, 5, 7, 10], name: 'Minor Pentatonic'};
+let MinorBlues = {scale: [0, 3, 5, 6, 7, 10], name: 'Minor Blues'};
 
-let HalfWholeDim = [0, 1, 3, 4, 6, 7, 9, 10];
-let WholeHalfDim = [0, 2, 3, 5, 6, 8, 9, 11];
+let HalfWholeDim = {scale: [0, 1, 3, 4, 6, 7, 9, 10], name: 'Half-whole Diminished'};
+let WholeHalfDim = {scale: [0, 2, 3, 5, 6, 8, 9, 11], name: 'Whole-half Diminished'};
 
-let Hirajoshi = [0, 5, 7, 8];
-let Insen = [0, 1, 6, 8, 11];
-let Iwato = [0, 1, 6, 7, 11];
-let Kumoi = [0, 2, 3, 7, 9];
+let Hirajoshi = {scale: [0, 5, 7, 8], name: 'Hirajoshi'};
+let Insen = {scale: [0, 1, 6, 8, 11], name: 'Insen'};
+let Iwato = {scale: [0, 1, 6, 7, 11], name: 'Iwato'};
+let Kumoi = {scale: [0, 2, 3, 7, 9], name: 'Kumoi'};
 
-let PelogBem = [0, 1, 6, 7, 8];
+let PelogBem = {scale: [0, 1, 6, 7, 8], name: 'Pelog Bem'};

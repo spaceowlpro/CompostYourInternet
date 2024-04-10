@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/web-audio-daw"></script>
     <script src="key.js"></script>
-    <script src="music.js"></script>
     <script src="weather.js"></script>
-    <script src="contact.js"></script>
+    <script src="music.js"></script>
+    <script src="ui.js"></script>
     <title>Compost Your Internet</title>
 </head>
 <body>
@@ -62,7 +62,10 @@
                 <option value="shape">Note Shape</option>
             </optgroup>
         </select>
-    </div>
+        <div class="connectionPopup">
+            Connected Data to Music!
+        </div>          
+    </div>  
     <button class="recipeBar">Recipe</button>
     <div class="recipeWindow" id="recipeWindow">
         The data connections you make with the music will be recorded here.
@@ -130,7 +133,8 @@
             Sachi A. Yanari-Rizzo,<br>
             Tim Zink
         </div>
-    </div>      
+    </div>     
+
 </body>
 <style>
     @font-face {
@@ -337,6 +341,24 @@
         opacity: .5;
     }
 
+    .connectionPopup{
+        position: absolute;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        top: 0;
+        left: 0;
+        transform: translate(0px, -31px);
+        width: 100vw;
+
+        background-color: #222e14;
+        font-family: openDyslexic;
+        color: #e5fccd;
+        border-style: none;
+        display: none;
+    }
 
     .tutorialButton{
         border-style: hidden;

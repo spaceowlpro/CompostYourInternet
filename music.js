@@ -220,18 +220,17 @@ function affectMusic()
 
   if(musicValue == 'noteAmount')
     NoteAmount(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
-
-  if(musicValue == 'reverbLevel')
+  else if(musicValue == 'reverbLevel')
     ReverbLevel(weatherValues[inputValue], inputValue);
-
-  if(musicValue == 'playSpeed')
+  else if(musicValue == 'playSpeed')
     PlaySpeed(weatherValues[inputValue], inputValue);
-
-  if(musicValue == 'shape')
+  else if(musicValue == 'shape')
     NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
-
-  if(musicValue == 'key')
+  else if(musicValue == 'key')
     SetKey(weatherValues[inputValue], inputValue);
+  else
+    InteractNotification('Select Data and Music types before connecting.');
+
 
   console.log(globalAffects);
   FillRecipeLog();
@@ -309,6 +308,9 @@ function NoteAmount(voiceID, data, dataCategory)
 
   voices[voiceID].voice.defaultEnv.hold = CalculateNoteLength(rangedData);
   voices[voiceID].voice.defaultEnv.attack = CalculateNoteAttack(rangedData);
+
+  //InteractNotification(rangedData + "" + weatherDataTypes[voices[voiceID].amountData].sign + ' = ' + (i - 2) + ' notes.');
+  InteractNotification(`${weatherValues[dataCategory].value}${weatherDataTypes[voices[voiceID].amountData].sign} ${weatherDataTypes[voices[voiceID].amountData].longText} -> ${i-2} notes on voice ${voiceID}`);
 }
 
 function CalculateNoteAmounts(data)
@@ -350,6 +352,7 @@ function ReverbLevel(data, dataCategory)
   //keep track of level and data categories
   globalAffects.reverb = reverbLevel;
   globalAffects.reverbData = dataCategory;
+
 }
 
 function PlaySpeed(data, dataCategory)
@@ -357,6 +360,8 @@ function PlaySpeed(data, dataCategory)
   playSpeed = rangeData(data.value, data.min, data.max, 0, 1.5);
   globalAffects.playSpeed = playSpeed;
   globalAffects.playspeedData = dataCategory;
+
+  InteractNotification(weatherDataTypes[dataCategory].longText + ' = ' + playSpeed.toFixed(2) + ' play speed.');
 }
 
 function NoteShape(voiceID, data, dataCategory)
@@ -395,6 +400,8 @@ function NoteShape(voiceID, data, dataCategory)
   ChangeShapeImages(voiceID);
   //keep track of shape data
   voices[voiceID].shapeData = dataCategory;
+
+  InteractNotification(weatherDataTypes[dataCategory].longText + ' = ' + shape + ' note shape.');
 }
 
 async function ChangeShapeImages(voiceID)
