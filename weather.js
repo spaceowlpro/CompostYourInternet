@@ -14,8 +14,8 @@ async function GetWeatherData()
       //response now contains parsed JSON ready for use
       weatherData = response;
       parseWeatherData(weatherData);
-      document.getElementById('loadingPopup').style.display = "none";
-      loading = false;
+      //document.getElementById('loadingPopup').style.display = "none";
+      //loading = false;
   
     }).catch((errorResponse) => {
       if (errorResponse.text) { //additional error information
@@ -26,13 +26,70 @@ async function GetWeatherData()
         //no additional error information 
       } 
     });
+    
+    console.log("loading from file");
+
+    fetch("tracerData.json", {
+    "method": "GET"
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw response; //check the http response code and if isn't ok then throw the response as an error
+        console.log("failed to fetch file");
+      }  
+      return response.json(); //parse the result as JSON
+    }).then(response => {
+      //response now contains parsed JSON ready for use
+      console.log("loaded from file");
+      serverData = response;
+      console.log(serverData);
+      console.log(serverData.length);
+      document.getElementById('loadingPopup').style.display = "none";
+      loading = false;
+    }).catch((errorResponse) => {
+      if (errorResponse.text) { //additional error information
+        errorResponse.text().then( errorMessage => {
+          //errorMessage now returns the response body which includes the full error message
+          console.log("Not loading server data")
+        })
+      } else {
+        //no additional error information 
+        console.log("no error info, but failed");
+      } 
+    });
 }
+
+function loadServerData()
+{
+    getFileFromServer("http://compostyourinternet.com/tracerData.json", function(content)
+        {
+            
+        }
+    );
+}
+
+function getFileFromServer(url, doneCallback) 
+{
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = handleStateChange;
+    xhr.open("GET", url, true);
+    xhr.send();
+
+    function handleStateChange() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            doneCallback(xhr.responseText);
+        }
+    }
+}
+
 
 GetWeatherData();
   
 var weatherData;
+var serverData;
 
 var weatherValues = {};
+var serverValues = {};
 
 let weatherDataTypes = {
   moonphase: {sign:'%', longText: 'Moonphase'},
@@ -41,7 +98,9 @@ let weatherDataTypes = {
   precipprob: {sign: '%', longText: 'Chance of rain'},
   windspeed: {sign: 'mph', longText: 'Windspeed'},
   cloudcover: {sign: '%', longText: 'Cloud cover'},
-  solarradiation: {sign: 'W/m2', longText: 'Solar radiation'}
+  solarradiation: {sign: 'W/m2', longText: 'Solar Radiation'},
+  solarVoltage: {sign: 'V', longText: 'Solar Voltage'},
+  batteryVoltage: {sign: 'V', longText: 'Battery Voltage'}
 }
 
 function parseWeatherData(weatherData)
@@ -68,8 +127,17 @@ function parseWeatherData(weatherData)
     weatherValues["solarradiation"] = {value: weatherData['currentConditions'].solarradiation, min: 0, max: 90};
     console.log(`Solar Radiation is ${weatherValues["solarradiation"].value}.`);
 
-    let weatherDataOptions = document.getElementsByTagName("option");
-    let optionArray = Array.from(weatherDataOptions);
+    //weatherValues["dateTime"] = {value: serverData[serverData.length - 1].dateTime};
+    //console.log(`Last server update was ${weatherValues["dateTime"].value}.`);
+
+    weatherValues["solarVoltage"] = {value: serverData[serverData.length - 1].solarVoltage, min: 0, max: 24};
+    console.log(`Solar Voltage is ${weatherValues["solarVoltage"].value}.`);
+
+    weatherValues["batteryVoltage"] = {value: serverData[serverData.length - 1].batteryVoltage, min: 0, max: 12};
+    console.log(`Battery Voltage is ${weatherValues["batteryVoltage"].value}.`);
+
+    let dataOptions = document.getElementsByTagName("option");
+    let optionArray = Array.from(dataOptions);
     
     optionArray.forEach(item =>{
       if(weatherValues[item.value] != null)
