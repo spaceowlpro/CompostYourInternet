@@ -136,6 +136,9 @@ function parseWeatherData(weatherData)
     weatherValues["batteryVoltage"] = {value: serverData[serverData.length - 1].batteryVoltage, min: 0, max: 12};
     console.log(`Battery Voltage is ${weatherValues["batteryVoltage"].value}.`);
 
+    if (serverData[serverData.length - 1].batteryVoltage !== null)
+      console.log(`Battery Percentage is ${serverData[serverData.length - 1].batteryVoltage}%.`);
+
     let dataOptions = document.getElementsByTagName("option");
     let optionArray = Array.from(dataOptions);
     
