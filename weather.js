@@ -100,13 +100,14 @@ let weatherDataTypes = {
   cloudcover: {sign: '%', longText: 'Cloud cover'},
   solarradiation: {sign: 'W/m2', longText: 'Solar Radiation'},
   solarVoltage: {sign: 'V', longText: 'Solar Voltage'},
-  batteryVoltage: {sign: 'V', longText: 'Battery Voltage'}
+  batteryVoltage: {sign: 'V', longText: 'Battery Voltage'},
+  batteryPercentage: {sign: '%', longText: 'Battery Percentage'}
 }
 
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
-    weatherValues["moonphase"] = {value: weatherData['currentConditions'].moonphase, min: 0, max: 1};
+    weatherValues["moonphase"] = {value: weatherData['currentConditions'].moonphase * 100, min: 0, max: 100};
     console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
 
     weatherValues["temp"] = {value: weatherData['currentConditions'].temp * 9 / 5 + 32, min: -27, max: 100};
@@ -136,8 +137,11 @@ function parseWeatherData(weatherData)
     weatherValues["batteryVoltage"] = {value: serverData[serverData.length - 1].batteryVoltage, min: 0, max: 12};
     console.log(`Battery Voltage is ${weatherValues["batteryVoltage"].value}.`);
 
-    if (serverData[serverData.length - 1].batteryVoltage !== null)
-      console.log(`Battery Percentage is ${serverData[serverData.length - 1].batteryVoltage}%.`);
+    if(serverData[serverData.length - 1].batteryPercentage != null)
+    {
+      weatherValues["batteryPercentage"] = {value: serverData[serverData.length - 1].batteryPercentage * 100, min: 0, max: 100};
+      console.log(`Battery Percentage is ${weatherValues["batteryPercentage"].value}.`);  
+    }
 
     let dataOptions = document.getElementsByTagName("option");
     let optionArray = Array.from(dataOptions);
@@ -146,8 +150,6 @@ function parseWeatherData(weatherData)
       if(weatherValues[item.value] != null)
       {
         var data = weatherValues[item.value].value;
-        if(item.value == 'moonphase')
-          data = 100 * data;
         item.innerText += ': ' + data + weatherDataTypes[item.value].sign;
       }
     });
