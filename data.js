@@ -65,11 +65,11 @@ function setSolarData()
   optionArray.forEach(item =>{
     if(item.value == "compostTemperature")
     {
-      item.innerText += ': ' + temperature + '°F'
+      item.innerText = 'Compost Temperature: ' + temperature + '°F'
     }
     else if(item.value == "compostMoisture")
     {
-        item.innerText += ': ' + moisture + '%';
+        item.innerText = 'Compost Moisture: ' + moisture + '%';
     }  
   });
 }

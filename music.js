@@ -133,21 +133,35 @@ async function MovePlayline(playline)
     }
   }
 
-  /* Once we have a way of tracking all of the change data we can update weather data and update the music
-  if(tripCount > 8)
+  //Once we have a way of tracking all of the change data we can update weather data and update the music
+  if(tripCount > 2)
+  {
     UpdateData();
-  */
+    tripCount = 1
+  }
+  
 }
 
 async function UpdateData()
 {
-  await GetWeatherData();
+  //await GetWeatherData();
+
+  GetDataFromSolarNode();
+
+  NoteAmount(0, dataValues[voices[0].amountData], voices[0].amountData);
+
 
   for(i = 0; i < voices.length; i++)
   {
-
+    if(voices[i+1].amount != null)
+    {
+      console.log("Voice " + i + " has changes!");
+      NoteAmount(i+1, dataValues[voices[i+1].amountData], voices[i+1].amountData);
+    }
   }
 
+  //todo once we're keeping track of note shape changes, do the same as above for note shapes
+  //todo same for key, and playspeed
 }
 
 async function CheckForNotes()
