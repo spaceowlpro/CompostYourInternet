@@ -219,19 +219,19 @@ function affectMusic()
   console.log(inputValue + ' selected from: ' + dataCategory + ' and connected to ' + musicValue);
 
   if(musicValue == 'noteAmount')
-    NoteAmount(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
+    NoteAmount(voiceIDFromStringValue(musicCategory), dataValues[inputValue], inputValue);
 
   if(musicValue == 'reverbLevel')
-    ReverbLevel(weatherValues[inputValue], inputValue);
+    ReverbLevel(dataValues[inputValue], inputValue);
 
   if(musicValue == 'playSpeed')
-    PlaySpeed(weatherValues[inputValue], inputValue);
+    PlaySpeed(dataValues[inputValue], inputValue);
 
   if(musicValue == 'shape')
-    NoteShape(voiceIDFromStringValue(musicCategory), weatherValues[inputValue], inputValue);
+    NoteShape(voiceIDFromStringValue(musicCategory), dataValues[inputValue], inputValue);
 
   if(musicValue == 'key')
-    SetKey(weatherValues[inputValue], inputValue);
+    SetKey(dataValues[inputValue], inputValue);
 
   console.log(globalAffects);
   FillRecipeLog();
@@ -313,8 +313,8 @@ function NoteAmount(voiceID, data, dataCategory)
 
 function CalculateNoteAmounts(data)
 {
-  //get rid of Math.ceil if you want things to be less symmetrical
-  return 360 / Math.ceil(rangeData(data.value, data.min, data.max, 1, maxNotesInVoice));
+    //get rid of Math.ceil if you want things to be less symmetrical
+    return 360 / Math.ceil(rangeData(data.value, data.min, data.max, 1, maxNotesInVoice));
 }
 
 function CalculateNoteLength(noteAmount)
@@ -426,6 +426,12 @@ async function SetKey(data, dataCategory)
       break;
     case 'cloudcover':
       CloudKey(data);
+      break;
+    case 'compostTemperature':
+      TempKey(data);
+      break;
+    case 'compostMoisture':
+      PrecipitationKey(data);
       break;
   }
 

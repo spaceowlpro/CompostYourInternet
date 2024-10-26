@@ -1,8 +1,5 @@
-//var node0Moisture = 25;
-//var node1Moisture = 70;
-
-var moisture0Spacing;
-var moisture1Spacing;
+var moisture;
+var temperature;
 
 function GetNoteSpacing(percentage)
 {
@@ -11,79 +8,68 @@ function GetNoteSpacing(percentage)
     return spacing;
 }
 
-var id = '1muq5xrjSeglbPRMeIAw5HFgKrKX-AnXuwqzq4W99GzA';
+var id = '16xfsfaJnMO2bnEgKehE0xLqXC3g4te_EwKcZyC8ENo4';
 var gid = '0';
-var url = 'https://docs.google.com/spreadsheets/d/'+id+'/gviz/tq?tqx=out:json&tq&gid='+gid;
+var nodeUrl = 'https://docs.google.com/spreadsheets/d/'+id+'/gviz/tq?tqx=out:json&tq&gid='+gid;
 
-var finalMoisture0;
-var finalMoisture1;
-
-window.onload = (event) => {
-  GetDataFromWeb();
-};
-
-function GetDataFromWeb()
+function GetDataFromSolarNode()
 {
-  fetch(url)
+  fetch(nodeUrl)
   .then(response => response.text())
-  .then(data => document.getElementById("json").innerHTML=myItems(data.substring(47).slice(0, -2))  
+  .then(data => myItems(data.substring(47).slice(0, -2))  
   );
-function myItems(jsonString){
-  var json = JSON.parse(jsonString);
-  var table = '<table><tr>'
-    var newData = "";
-    var moisture0Logging;
-    var moisture1Logging;
-    var lastMoisture0;
-    var lastMoisture1;
-    var finalMoisture0;
-    var finalMoisture1;
-  json.table.cols.forEach(colonne => table += '<th>' + colonne.label + '</th>')
-  table += '</tr>'
-  json.table.rows.forEach(ligne => {
-    table += '<tr>'
-    ligne.c.forEach(cellule => {
-        try{var valeur = cellule.f ? cellule.f : cellule.v}
-        catch(e){var valeur = ''}
-        table += '<td>' + valeur + '</td>'
-        newData += valeur;
-        if(valeur == "node0Moisture")
-        {
-            moisture0Logging = true;
-            moisture1Logging = false;
-        }
-        else if(valeur == "node1Moisture")
-        {
-            moisture1Logging = true;
-            moisture0Logging = false;
-        }
-        else
-        {
-            if(moisture0Logging)
-            {
-                lastMoisture0 = valeur;
-            }
-            if(moisture1Logging)
-            {
-                lastMoisture1 = valeur;
-            }
-            moisture1Logging = false;
-            moisture0Logging = false;
-        }
-      }
-    )
-    table += '</tr>'
+    function myItems(jsonString){
+      var json = JSON.parse(jsonString);
+      value = json.table.rows[json.table.rows.length - 1].c[0].v;
+      console.log("value = " + value);
+      ParseData(value);
     }
-  )
-  table += '</table>'
-  finalMoisture0 = lastMoisture0;
-  console.log("Moisture0 = " + finalMoisture0);
-  finalMoisture1 = lastMoisture1;
-  console.log("Moisture1 = " + finalMoisture1);
-  moisture0Spacing = GetNoteSpacing(finalMoisture0);
-  moisture1Spacing = GetNoteSpacing(finalMoisture1);
-  startMusic();
-  return table
-}
 }
 
+function ParseData(stringData)
+{
+  var newStringData = splitMulti(stringData, ['m1', 'm2', 't1', 't2'])
+
+  if (newStringData.length == 5)
+  {
+    var newMoisture = parseInt(newStringData[1]);
+    var newTemp = parseInt(newStringData[3]);
+    if (newMoisture != null)
+      moisture = newMoisture;
+    if(newTemp != null)
+      temperature = newTemp;
+  }
+  setSolarData();
+}
+
+function splitMulti(str, tokens){
+  var tempChar = tokens[0]; // We can use the first token as a temporary join character
+  for(var i = 1; i < tokens.length; i++){
+      str = str.split(tokens[i]).join(tempChar);
+  }
+  str = str.split(tempChar);
+  return str;
+}
+
+function setSolarData()
+{
+  console.log("moisture = " + moisture);
+  console.log("temp = " + temperature);
+
+  let dataOptions = document.getElementsByTagName("option");
+  let optionArray = Array.from(dataOptions);
+
+  dataValues["compostTemperature"] = {value: temperature, min: 90, max: 180};
+  dataValues["compostMoisture"] = {value: moisture, min: 0, max: 100};
+
+  optionArray.forEach(item =>{
+    if(item.value == "compostTemperature")
+    {
+      item.innerText += ': ' + temperature + '°F'
+    }
+    else if(item.value == "compostMoisture")
+    {
+        item.innerText += ': ' + moisture + '%';
+    }  
+  });
+}

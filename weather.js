@@ -16,7 +16,7 @@ async function GetWeatherData()
       parseWeatherData(weatherData);
       document.getElementById('loadingPopup').style.display = "none";
       loading = false;
-  
+      GetDataFromSolarNode();
     }).catch((errorResponse) => {
       if (errorResponse.text) { //additional error information
         errorResponse.text().then( errorMessage => {
@@ -32,7 +32,7 @@ GetWeatherData();
   
 var weatherData;
 
-var weatherValues = {};
+var dataValues = {};
 
 let weatherDataTypes = {
   moonphase: '%',
@@ -47,34 +47,34 @@ let weatherDataTypes = {
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
-    weatherValues["moonphase"] = {value: weatherData['currentConditions'].moonphase, min: 0, max: 1};
-    console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
+    dataValues["moonphase"] = {value: weatherData['currentConditions'].moonphase, min: 0, max: 1};
+    console.log(`Moonphase is ${dataValues["moonphase"].value}.`);
 
-    weatherValues["temp"] = {value: weatherData['currentConditions'].temp * 9 / 5 + 32, min: -27, max: 100};
-    console.log(`Temperature is ${weatherValues["temp"].value}.`);
+    dataValues["temp"] = {value: weatherData['currentConditions'].temp * 9 / 5 + 32, min: -27, max: 100};
+    console.log(`Temperature is ${dataValues["temp"].value}.`);
 
-    weatherValues["humidity"] = {value: weatherData['currentConditions'].humidity, min: 0, max: 100};
-    console.log(`Humidity is ${weatherValues["humidity"].value}.`);
+    dataValues["humidity"] = {value: weatherData['currentConditions'].humidity, min: 0, max: 100};
+    console.log(`Humidity is ${dataValues["humidity"].value}.`);
 
-    weatherValues["precipprob"] = {value: weatherData['currentConditions'].precipprob, min: 0, max: 100};
-    console.log(`Precipitation Probability is ${weatherValues["precipprob"].value}.`);
+    dataValues["precipprob"] = {value: weatherData['currentConditions'].precipprob, min: 0, max: 100};
+    console.log(`Precipitation Probability is ${dataValues["precipprob"].value}.`);
 
-    weatherValues["windspeed"] = {value: weatherData['currentConditions'].windspeed, min: 0, max: 98};
-    console.log(`Windspeed is ${weatherValues["windspeed"].value}.`);
+    dataValues["windspeed"] = {value: weatherData['currentConditions'].windspeed, min: 0, max: 98};
+    console.log(`Windspeed is ${dataValues["windspeed"].value}.`);
 
-    weatherValues["cloudcover"] = {value: weatherData['currentConditions'].cloudcover, min: 0, max: 100};
-    console.log(`Cloud Cover is ${weatherValues["cloudcover"].value}.`);
+    dataValues["cloudcover"] = {value: weatherData['currentConditions'].cloudcover, min: 0, max: 100};
+    console.log(`Cloud Cover is ${dataValues["cloudcover"].value}.`);
     
-    weatherValues["solarradiation"] = {value: weatherData['currentConditions'].solarradiation, min: 0, max: 90};
-    console.log(`Solar Radiation is ${weatherValues["solarradiation"].value}.`);
+    dataValues["solarradiation"] = {value: weatherData['currentConditions'].solarradiation, min: 0, max: 90};
+    console.log(`Solar Radiation is ${dataValues["solarradiation"].value}.`);
 
     let weatherDataOptions = document.getElementsByTagName("option");
     let optionArray = Array.from(weatherDataOptions);
     
     optionArray.forEach(item =>{
-      if(weatherValues[item.value] != null)
+      if(dataValues[item.value] != null)
       {
-        var data = weatherValues[item.value].value;
+        var data = dataValues[item.value].value;
         if(item.value == 'moonphase')
           data = 100 * data;
         item.innerText += ': ' + data + weatherDataTypes[item.value];
@@ -84,6 +84,11 @@ function parseWeatherData(weatherData)
 
 function rangeData(dataValue, min, max, newMin, newMax)
 {
-  return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
+  if (dataValue < min)
+    return newMin;
+  if (dataValue > max)
+    return newMax;
+  else
+    return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
 }
 
