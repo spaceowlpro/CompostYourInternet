@@ -14,6 +14,7 @@ async function GetWeatherData()
       //response now contains parsed JSON ready for use
       weatherData = response;
       parseWeatherData(weatherData);
+      GetDataFromSolarNode();
       //document.getElementById('loadingPopup').style.display = "none";
       //loading = false;
   
@@ -88,7 +89,7 @@ GetWeatherData();
 var weatherData;
 var serverData;
 
-var weatherValues = {};
+var dataValues = {};
 var serverValues = {};
 
 let weatherDataTypes = {
@@ -107,49 +108,49 @@ let weatherDataTypes = {
 function parseWeatherData(weatherData)
 {
     console.log('Weather Data recieved for: ' + weatherData['address']);
-    weatherValues["moonphase"] = {value: weatherData['currentConditions'].moonphase * 100, min: 0, max: 100};
-    console.log(`Moonphase is ${weatherValues["moonphase"].value}.`);
+    dataValues["moonphase"] = {value: weatherData['currentConditions'].moonphase * 100, min: 0, max: 100};
+    console.log(`Moonphase is ${dataValues["moonphase"].value}.`);
 
-    weatherValues["temp"] = {value: weatherData['currentConditions'].temp * 9 / 5 + 32, min: -27, max: 100};
-    console.log(`Temperature is ${weatherValues["temp"].value}.`);
+    dataValues["temp"] = {value: weatherData['currentConditions'].temp * 9 / 5 + 32, min: -27, max: 100};
+    console.log(`Temperature is ${dataValues["temp"].value}.`);
 
-    weatherValues["humidity"] = {value: weatherData['currentConditions'].humidity, min: 0, max: 100};
-    console.log(`Humidity is ${weatherValues["humidity"].value}.`);
+    dataValues["humidity"] = {value: weatherData['currentConditions'].humidity, min: 0, max: 100};
+    console.log(`Humidity is ${dataValues["humidity"].value}.`);
 
-    weatherValues["precipprob"] = {value: weatherData['currentConditions'].precipprob, min: 0, max: 100};
-    console.log(`Precipitation Probability is ${weatherValues["precipprob"].value}.`);
+    dataValues["precipprob"] = {value: weatherData['currentConditions'].precipprob, min: 0, max: 100};
+    console.log(`Precipitation Probability is ${dataValues["precipprob"].value}.`);
 
-    weatherValues["windspeed"] = {value: weatherData['currentConditions'].windspeed, min: 0, max: 98};
-    console.log(`Windspeed is ${weatherValues["windspeed"].value}.`);
+    dataValues["windspeed"] = {value: weatherData['currentConditions'].windspeed, min: 0, max: 98};
+    console.log(`Windspeed is ${dataValues["windspeed"].value}.`);
 
-    weatherValues["cloudcover"] = {value: weatherData['currentConditions'].cloudcover, min: 0, max: 100};
-    console.log(`Cloud Cover is ${weatherValues["cloudcover"].value}.`);
+    dataValues["cloudcover"] = {value: weatherData['currentConditions'].cloudcover, min: 0, max: 100};
+    console.log(`Cloud Cover is ${dataValues["cloudcover"].value}.`);
     
-    weatherValues["solarradiation"] = {value: weatherData['currentConditions'].solarradiation, min: 0, max: 90};
-    console.log(`Solar Radiation is ${weatherValues["solarradiation"].value}.`);
+    dataValues["solarradiation"] = {value: weatherData['currentConditions'].solarradiation, min: 0, max: 90};
+    console.log(`Solar Radiation is ${dataValues["solarradiation"].value}.`);
 
     //weatherValues["dateTime"] = {value: serverData[serverData.length - 1].dateTime};
     //console.log(`Last server update was ${weatherValues["dateTime"].value}.`);
 
-    weatherValues["solarVoltage"] = {value: serverData[serverData.length - 1].solarVoltage, min: 0, max: 24};
-    console.log(`Solar Voltage is ${weatherValues["solarVoltage"].value}.`);
+    dataValues["solarVoltage"] = {value: serverData[serverData.length - 1].solarVoltage, min: 0, max: 24};
+    console.log(`Solar Voltage is ${dataValues["solarVoltage"].value}.`);
 
-    weatherValues["batteryVoltage"] = {value: serverData[serverData.length - 1].batteryVoltage, min: 0, max: 12};
-    console.log(`Battery Voltage is ${weatherValues["batteryVoltage"].value}.`);
+    dataValues["batteryVoltage"] = {value: serverData[serverData.length - 1].batteryVoltage, min: 0, max: 12};
+    console.log(`Battery Voltage is ${dataValues["batteryVoltage"].value}.`);
 
     if(serverData[serverData.length - 1].batteryPercentage != null)
     {
-      weatherValues["batteryPercentage"] = {value: serverData[serverData.length - 1].batteryPercentage * 100, min: 0, max: 100};
-      console.log(`Battery Percentage is ${weatherValues["batteryPercentage"].value}.`);  
+      dataValues["batteryPercentage"] = {value: serverData[serverData.length - 1].batteryPercentage * 100, min: 0, max: 100};
+      console.log(`Battery Percentage is ${dataValues["batteryPercentage"].value}.`);  
     }
 
     let dataOptions = document.getElementsByTagName("option");
     let optionArray = Array.from(dataOptions);
     
     optionArray.forEach(item =>{
-      if(weatherValues[item.value] != null)
+      if(dataValues[item.value] != null)
       {
-        var data = weatherValues[item.value].value;
+        var data = dataValues[item.value].value;
         item.innerText += ': ' + data + weatherDataTypes[item.value].sign;
       }
     });
@@ -157,6 +158,11 @@ function parseWeatherData(weatherData)
 
 function rangeData(dataValue, min, max, newMin, newMax)
 {
-  return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
+  if(dataValue < min)
+    return newMin;
+  if(dataValue > max)
+    return newMax;
+  else
+    return (((newMax-newMin) * (dataValue - min)) / (max - min)) + newMin;
 }
 
