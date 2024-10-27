@@ -1,5 +1,6 @@
 var moisture;
 var temperature;
+var intialMusicStarted = false;
 
 function GetNoteSpacing(percentage)
 {
@@ -39,7 +40,7 @@ function ParseData(stringData)
     if(newTemp != null)
       temperature = newTemp;
   }
-  setSolarData();
+  setSolarData();  
 }
 
 function splitMulti(str, tokens){
@@ -72,4 +73,10 @@ function setSolarData()
         item.innerText = 'Compost Moisture: ' + moisture + '%';
     }  
   });
+
+  if(!intialMusicStarted)
+  {
+    InititalMusic();
+    intialMusicStarted = true;  
+  }
 }

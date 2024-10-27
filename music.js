@@ -142,26 +142,33 @@ async function MovePlayline(playline)
   
 }
 
-async function UpdateData()
+function UpdateData()
 {
   //await GetWeatherData();
 
   GetDataFromSolarNode();
 
-  NoteAmount(0, dataValues[voices[0].amountData], voices[0].amountData);
-
-
-  for(i = 0; i < voices.length; i++)
+  for(let i = 0; i < 4; i++)
   {
-    if(voices[i+1].amount != null)
+    if(voices[i].amountData != null)
     {
-      console.log("Voice " + i + " has changes!");
-      NoteAmount(i+1, dataValues[voices[i+1].amountData], voices[i+1].amountData);
+      //update note positions
+      NoteAmount(i, dataValues[voices[i].amountData], voices[i].amountData);
+      //update note shapes
+      if(voices[i].shapeData != null)
+        NoteShape(i, dataValues[voices[i].shapeData], voices[i].shapeData);
     }
   }
 
-  //todo once we're keeping track of note shape changes, do the same as above for note shapes
-  //todo same for key, and playspeed
+  if(globalAffects.keyData != null)
+  {
+    SetKey(dataValues[globalAffects.keyData], globalAffects.keyData);
+  }
+
+  if(globalAffects.playspeedData != null)
+  {
+    PlaySpeed(dataValues[globalAffects.playspeedData], globalAffects.playspeedData);
+  }
 }
 
 async function CheckForNotes()
@@ -483,4 +490,10 @@ async function FillRecipeLog()
         recipeLog.innerText += "Voice" + (i + 1) + "'s note shape determined by " + voices[i].shapeData + '\n';
     }
   }
+}
+
+function InititalMusic()
+{
+  NoteAmount(0,dataValues['compostTemperature'], 'compostTemperature');
+  NoteAmount(1,dataValues['compostMoisture'], 'compostMoisture');
 }
